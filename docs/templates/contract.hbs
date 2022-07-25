@@ -1,0 +1,67 @@
+{{h}} {{name}}
+
+{{natspec.title}}
+
+{{{natspec.notice}}}
+
+{{{natspec.dev}}}
+
+{{#if variables}}
+{{h 2}} Variables
+{{/if}}
+
+{{#each variables}}
+{{#hsection 2}}
+{{>item}}
+{{/hsection}}
+{{/each}}
+
+{{#if functions}}
+{{h 2}} Functions
+{{/if}}
+
+{{#each functions}}
+{{#hsection 2}}
+{{>item}}
+{{/hsection}}
+{{/each}}
+
+{{#if modifiers}}
+{{h 2}} Modifiers
+{{/if}}
+
+{{#each modifiers}}
+{{#hsection 2}}
+{{>item}}
+{{/hsection}}
+{{/each}}
+
+{{#if events}}
+{{h 2}} Events
+{{/if}}
+
+{{#each events}}
+{{#hsection 2}}
+{{>item}}
+{{/hsection}}
+{{/each}}
+
+{{#if errors}}
+{{h 2}} Custom errors
+{{/if}}
+
+{{#each errors}}
+{{#hsection 2}}
+{{>item}}
+{{/hsection}}
+{{/each}}
+
+{{#if types}}
+{{h 2}} Custom types
+{{/if}}
+
+{{#each types}}
+{{#hsection 2}}
+{{>item}}
+{{/hsection}}
+{{/each}}
