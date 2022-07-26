@@ -1,23 +1,23 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.15;
 
-import { IGatedAirdrop } from "./interfaces/IGatedAirdrop.sol";
+import { IGatedDistributor } from "./interfaces/IGatedDistributor.sol";
 import { RequestGuildRole } from "./RequestGuildRole.sol";
 import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-/// @title A Guild-gated ERC20 airdrop.
-contract GatedAirdrop is IGatedAirdrop, RequestGuildRole, Ownable {
-    /// @inheritdoc IGatedAirdrop
+/// @title A Guild-gated ERC20 distributor.
+contract GatedDistributor is IGatedDistributor, RequestGuildRole, Ownable {
+    /// @inheritdoc IGatedDistributor
     uint96 public immutable rewardedRole;
-    /// @inheritdoc IGatedAirdrop
+    /// @inheritdoc IGatedDistributor
     address public immutable token;
-    /// @inheritdoc IGatedAirdrop
+    /// @inheritdoc IGatedDistributor
     uint128 public immutable amount;
-    /// @inheritdoc IGatedAirdrop
+    /// @inheritdoc IGatedDistributor
     uint128 public distributionEnd;
 
-    /// @inheritdoc IGatedAirdrop
+    /// @inheritdoc IGatedDistributor
     mapping(address => bool) public hasClaimed;
 
     /// @notice Sets the config and the oracle details.
@@ -47,7 +47,7 @@ contract GatedAirdrop is IGatedAirdrop, RequestGuildRole, Ownable {
         distributionEnd = uint128(block.timestamp + distributionDuration);
     }
 
-    /// @inheritdoc IGatedAirdrop
+    /// @inheritdoc IGatedDistributor
     /// @dev TODO when we have a more suitable Guild endpoint: remove guildIndex parameter
     function claim(uint256 guildIndex) external {
         if (block.timestamp > distributionEnd) revert DistributionEnded(block.timestamp, distributionEnd);
@@ -73,14 +73,14 @@ contract GatedAirdrop is IGatedAirdrop, RequestGuildRole, Ownable {
         emit Claimed(receiver);
     }
 
-    /// @inheritdoc IGatedAirdrop
+    /// @inheritdoc IGatedDistributor
     function prolongDistributionPeriod(uint128 additionalSeconds) external onlyOwner {
         uint128 newDistributionEnd = distributionEnd + additionalSeconds;
         distributionEnd = newDistributionEnd;
         emit DistributionProlonged(newDistributionEnd);
     }
 
-    /// @inheritdoc IGatedAirdrop
+    /// @inheritdoc IGatedDistributor
     function withdraw(address recipient) external onlyOwner {
         if (block.timestamp <= distributionEnd) revert DistributionOngoing(block.timestamp, distributionEnd);
         uint256 balance = IERC20(token).balanceOf(address(this));

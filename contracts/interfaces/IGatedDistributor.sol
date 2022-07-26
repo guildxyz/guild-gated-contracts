@@ -3,7 +3,7 @@
 pragma solidity ^0.8.0;
 
 /// @title Provides ERC20 token distribution based on a Merkle tree.
-interface IGatedAirdrop {
+interface IGatedDistributor {
     /// @notice Returns the id of the role in Guild.
     /// @return role The id of the role.
     function rewardedRole() external view returns (uint96 role);

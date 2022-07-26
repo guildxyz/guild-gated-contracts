@@ -13,8 +13,8 @@ const jobId = ethers.utils.hexZeroPad("0xa56c23c069b446a5bfd3b5fc91383991", 32);
 const oracleFee = ethers.BigNumber.from("50000000000000000");
 
 async function main() {
-  const GatedAirdrop = await ethers.getContractFactory("GatedAirdrop");
-  const airdrop = await GatedAirdrop.deploy(
+  const GatedDistributor = await ethers.getContractFactory("GatedDistributor");
+  const distributor = await GatedDistributor.deploy(
     token,
     amount,
     distributionDuration,
@@ -25,9 +25,9 @@ async function main() {
     oracleFee
   );
 
-  await airdrop.deployed();
+  await distributor.deployed();
 
-  console.log("Contract deployed to:", airdrop.address);
+  console.log("Gated Distributor contract deployed to:", distributor.address);
 }
 
 main().catch((error) => {
