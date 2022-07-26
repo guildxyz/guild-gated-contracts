@@ -25,18 +25,32 @@ abstract contract RequestGuildRole is ChainlinkClient {
     mapping(bytes32 => RequestParams) public requests;
     mapping(bytes32 => Result) public results;
 
-    // 0.05 LINK (0.07 for Polygon Mainnet)
-    uint256 private constant ORACLE_FEE = ((1 * LINK_DIVISIBILITY) / 100) * 5;
-    bytes32 private constant JOB_ID = "a56c23c069b446a5bfd3b5fc91383991";
+    uint256 private immutable oracleFee;
+    bytes32 private immutable jobId;
 
     error DelegatecallReverted();
 
+    /// @notice Error thrown when a function is called by anyone but the oracle.
+    error OnlyOracle();
+
     event HasRole(address userAddress, uint256 roleId, bool access);
 
-    constructor() {
-        // RINKEBY
-        setChainlinkToken(0x01BE23585060835E02B77ef475b0Cc51aA1e0709);
-        setChainlinkOracle(0x188b71C9d27cDeE01B9b0dfF5C1aff62E8D6F434);
+    constructor(
+        address linkToken,
+        address oracleAddress,
+        bytes32 jobId_,
+        uint256 oracleFee_
+    ) {
+        jobId = jobId_;
+        oracleFee = oracleFee_;
+        setChainlinkToken(linkToken);
+        setChainlinkOracle(oracleAddress);
+    }
+
+    /// @notice Checks if the sender is the oracle address.
+    modifier onlyOracle() {
+        if (msg.sender != chainlinkOracleAddress()) revert OnlyOracle();
+        _;
     }
 
     /// @notice Request the needed data from the oracle.
@@ -50,10 +64,10 @@ abstract contract RequestGuildRole is ChainlinkClient {
         uint256 roleId,
         bytes memory functionToCall
     ) public {
-        Chainlink.Request memory req = buildChainlinkRequest(JOB_ID, address(this), this.fulfillRoleCheck.selector);
+        Chainlink.Request memory req = buildChainlinkRequest(jobId, address(this), this.fulfillRoleCheck.selector);
         req.add("get", string.concat("https://api.guild.xyz/v1/user/membership/", userAddress.toHexString()));
         req.add("path", string.concat(guildIndex.toString(), ",roleIds"));
-        bytes32 requestId = sendOperatorRequest(req, ORACLE_FEE);
+        bytes32 requestId = sendOperatorRequest(req, oracleFee);
 
         RequestParams storage lastRequest = requests[requestId];
         lastRequest.userAddress = userAddress;
@@ -62,7 +76,7 @@ abstract contract RequestGuildRole is ChainlinkClient {
     }
 
     /// @dev The function called by the Chainlink node returning the data.
-    function fulfillRoleCheck(bytes32 requestId, uint256[] memory returnedArray) public {
+    function fulfillRoleCheck(bytes32 requestId, uint256[] memory returnedArray) public onlyOracle {
         RequestParams storage lastRequest = requests[requestId];
         Result storage lastResult = results[requestId];
 
@@ -96,6 +110,7 @@ abstract contract RequestGuildRole is ChainlinkClient {
             if (!success) {
                 if (returndata.length > 0) {
                     // If there is a revert reason, get it.
+                    /// @solidity memory-safe-assembly
                     assembly {
                         let returndata_size := mload(returndata)
                         revert(add(32, returndata), returndata_size)

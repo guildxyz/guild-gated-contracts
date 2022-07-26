@@ -4,17 +4,21 @@ pragma solidity ^0.8.0;
 
 /// @title Provides ERC20 token distribution based on a Merkle tree.
 interface IGatedAirdrop {
+    /// @notice Returns the id of the role in Guild.
+    /// @return role The id of the role.
+    function rewardedRole() external view returns (uint96 role);
+
     /// @notice Returns the address of the token distributed by this contract.
     /// @return tokenAddress The address of the token.
     function token() external view returns (address tokenAddress);
 
     /// @notice Returns the amount of tokens an eligible address can claim.
     /// @return tokenAmount The amount in wei.
-    function amount() external view returns (uint256 tokenAmount);
+    function amount() external view returns (uint128 tokenAmount);
 
     /// @notice Returns the unix timestamp that marks the end of the token distribution.
     /// @return unixSeconds The unix timestamp in seconds.
-    function distributionEnd() external view returns (uint256 unixSeconds);
+    function distributionEnd() external view returns (uint128 unixSeconds);
 
     /// @notice Returns true if the address has already claimed.
     /// @param account User addresses.
@@ -27,7 +31,7 @@ interface IGatedAirdrop {
 
     /// @notice Prolongs the distribution period of the tokens. Callable only by the owner.
     /// @param additionalSeconds The seconds to add to the current distributionEnd.
-    function prolongDistributionPeriod(uint256 additionalSeconds) external;
+    function prolongDistributionPeriod(uint128 additionalSeconds) external;
 
     /// @notice Sends the tokens remaining after the distribution has ended to `recipient`. Callable only by the owner.
     /// @param recipient The address receiving the tokens.
@@ -39,7 +43,7 @@ interface IGatedAirdrop {
 
     /// @notice This event is triggered whenever a call to {prolongDistributionPeriod} succeeds.
     /// @param newDistributionEnd The time when the distribution ends.
-    event DistributionProlonged(uint256 newDistributionEnd);
+    event DistributionProlonged(uint128 newDistributionEnd);
 
     /// @notice This event is triggered whenever a call to {withdraw} succeeds.
     /// @param account The address that received the tokens.
@@ -67,9 +71,6 @@ interface IGatedAirdrop {
 
     /// @notice Error thrown when the Merkle proof is invalid.
     error InvalidProof();
-
-    /// @notice Error thrown when a function is called by anyone but the oracle.
-    error OnlyOracle();
 
     /// @notice Error thrown when the contract has less tokens than needed for a claim.
     error OutOfTokens();

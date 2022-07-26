@@ -8,37 +8,43 @@ import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 /// @title A Guild-gated ERC20 airdrop.
 contract GatedAirdrop is IGatedAirdrop, RequestGuildRole, Ownable {
-    uint256 public constant GUILD_MEMBER_ROLEID = 1904; // Guild Member
-
+    /// @inheritdoc IGatedAirdrop
+    uint96 public immutable rewardedRole;
     /// @inheritdoc IGatedAirdrop
     address public immutable token;
     /// @inheritdoc IGatedAirdrop
-    uint256 public immutable amount;
+    uint128 public immutable amount;
     /// @inheritdoc IGatedAirdrop
-    uint256 public distributionEnd;
+    uint128 public distributionEnd;
 
     /// @inheritdoc IGatedAirdrop
     mapping(address => bool) public hasClaimed;
 
-    /// @notice Sets config and the oracle details.
+    /// @notice Sets the config and the oracle details.
     /// @param token_ The address of the ERC20 token to distribute.
+    /// @param amount_ The amount of tokens an eligible address will be able to claim.
     /// @param distributionDuration The time interval while the distribution lasts in seconds.
+    /// @param rewardedRole_ The Guild id of the rewarded role.
+    /// @param linkToken The address of the Chainlink token.
+    /// @param oracleAddress The address of the oracle processing requests.
+    /// @param jobId The id of the oracle job.
+    /// @param oracleFee The amount of tokens the oracle needs for every request.
     constructor(
         address token_,
-        uint256 amount_,
-        uint256 distributionDuration
-    ) RequestGuildRole() {
+        uint128 amount_,
+        uint256 distributionDuration,
+        uint96 rewardedRole_,
+        address linkToken,
+        address oracleAddress,
+        bytes32 jobId,
+        uint256 oracleFee
+    ) RequestGuildRole(linkToken, oracleAddress, jobId, oracleFee) {
         if (token_ == address(0)) revert InvalidParameters();
 
+        rewardedRole = rewardedRole_;
         token = token_;
         amount = amount_;
-        distributionEnd = block.timestamp + distributionDuration;
-    }
-
-    /// @notice Checks if the sender is the oracle address.
-    modifier onlyOracle() {
-        if (msg.sender != chainlinkOracleAddress()) revert OnlyOracle();
-        _;
+        distributionEnd = uint128(block.timestamp + distributionDuration);
     }
 
     /// @inheritdoc IGatedAirdrop
@@ -51,7 +57,7 @@ contract GatedAirdrop is IGatedAirdrop, RequestGuildRole, Ownable {
         requestAccessCheck(
             msg.sender,
             guildIndex,
-            GUILD_MEMBER_ROLEID,
+            rewardedRole,
             abi.encodeWithSelector(this.fulfillClaim.selector, msg.sender)
         );
     }
@@ -68,8 +74,8 @@ contract GatedAirdrop is IGatedAirdrop, RequestGuildRole, Ownable {
     }
 
     /// @inheritdoc IGatedAirdrop
-    function prolongDistributionPeriod(uint256 additionalSeconds) external onlyOwner {
-        uint256 newDistributionEnd = distributionEnd + additionalSeconds;
+    function prolongDistributionPeriod(uint128 additionalSeconds) external onlyOwner {
+        uint128 newDistributionEnd = distributionEnd + additionalSeconds;
         distributionEnd = newDistributionEnd;
         emit DistributionProlonged(newDistributionEnd);
     }
