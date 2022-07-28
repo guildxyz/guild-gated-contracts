@@ -28,6 +28,17 @@ async function main() {
   await distributor.deployed();
 
   console.log("Gated Distributor contract deployed to:", distributor.address);
+  console.log(
+    "Constructor arguments:",
+    token,
+    amount.toString(),
+    distributionDuration.toString(),
+    rewardedRole.toString(),
+    chainlinkToken,
+    oracleAddress,
+    jobId,
+    oracleFee.toString()
+  );
 }
 
 main().catch((error) => {
