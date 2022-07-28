@@ -50,7 +50,7 @@ abstract contract RequestGuildRole is ChainlinkClient {
         uint256 roleId,
         bytes4 callbackFn,
         bytes memory args
-    ) public {
+    ) internal {
         Chainlink.Request memory req = buildChainlinkRequest(jobId, address(this), callbackFn);
         req.add("get", string.concat("https://api.guild.xyz/v1/user/membership/", userAddress.toHexString()));
         req.add("path", string.concat(guildIndex.toString(), ",roleIds"));
