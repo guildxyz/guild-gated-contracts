@@ -72,6 +72,9 @@ interface IGatedDistributor {
     /// @notice Error thrown when the Merkle proof is invalid.
     error InvalidProof();
 
+    /// @notice Error thrown when a function is called by anyone but the oracle.
+    error OnlyOracle();
+
     /// @notice Error thrown when the contract has less tokens than needed for a claim.
     error OutOfTokens();
 

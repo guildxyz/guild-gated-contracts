@@ -30,9 +30,6 @@ abstract contract RequestGuildRole is ChainlinkClient {
 
     error DelegatecallReverted();
 
-    /// @notice Error thrown when a function is called by anyone but the oracle.
-    error OnlyOracle();
-
     event HasRole(address userAddress, uint256 roleId, bool access);
 
     constructor(
@@ -45,12 +42,6 @@ abstract contract RequestGuildRole is ChainlinkClient {
         oracleFee = oracleFee_;
         setChainlinkToken(linkToken);
         setChainlinkOracle(oracleAddress);
-    }
-
-    /// @notice Checks if the sender is the oracle address.
-    modifier onlyOracle() {
-        if (msg.sender != chainlinkOracleAddress()) revert OnlyOracle();
-        _;
     }
 
     /// @notice Request the needed data from the oracle.
@@ -76,7 +67,10 @@ abstract contract RequestGuildRole is ChainlinkClient {
     }
 
     /// @dev The function called by the Chainlink node returning the data.
-    function fulfillRoleCheck(bytes32 requestId, uint256[] memory returnedArray) public onlyOracle {
+    function fulfillRoleCheck(bytes32 requestId, uint256[] memory returnedArray)
+        public
+        recordChainlinkFulfillment(requestId)
+    {
         RequestParams storage lastRequest = requests[requestId];
         Result storage lastResult = results[requestId];
 

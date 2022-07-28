@@ -47,6 +47,12 @@ contract GatedDistributor is IGatedDistributor, RequestGuildRole, Ownable {
         distributionEnd = uint128(block.timestamp + distributionDuration);
     }
 
+    /// @notice Checks if the sender is the oracle address.
+    modifier onlyOracle() {
+        if (msg.sender != chainlinkOracleAddress()) revert OnlyOracle();
+        _;
+    }
+
     /// @inheritdoc IGatedDistributor
     /// @dev TODO when we have a more suitable Guild endpoint: remove guildIndex parameter
     function claim(uint256 guildIndex) external {
