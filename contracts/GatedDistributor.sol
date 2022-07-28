@@ -47,12 +47,6 @@ contract GatedDistributor is IGatedDistributor, RequestGuildRole, Ownable {
         distributionEnd = uint128(block.timestamp + distributionDuration);
     }
 
-    /// @notice Checks if the sender is the oracle address.
-    modifier onlyOracle() {
-        if (msg.sender != chainlinkOracleAddress()) revert OnlyOracle();
-        _;
-    }
-
     /// @inheritdoc IGatedDistributor
     /// @dev TODO when we have a more suitable Guild endpoint: remove guildIndex parameter
     function claim(uint256 guildIndex) external {
@@ -64,12 +58,19 @@ contract GatedDistributor is IGatedDistributor, RequestGuildRole, Ownable {
             msg.sender,
             guildIndex,
             rewardedRole,
-            abi.encodeWithSelector(this.fulfillClaim.selector, msg.sender)
+            this.fulfillClaim.selector,
+            abi.encodePacked(msg.sender)
         );
     }
 
     /// @dev The actual claim function called by the oracle if the requirements are fulfilled.
-    function fulfillClaim(address receiver) public onlyOracle {
+    function fulfillClaim(bytes32 requestId, uint256[] memory returnedArray)
+        public
+        checkRole(requestId, returnedArray)
+    {
+        // TODO: requests[requestId].userAddress could be used, this is just for demonstrating this feature.
+        address receiver = abi.decode(requests[requestId].args, (address));
+
         if (hasClaimed[receiver]) revert AlreadyClaimed();
 
         // Mark it claimed and send the token.

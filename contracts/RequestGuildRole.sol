@@ -11,24 +11,18 @@ abstract contract RequestGuildRole is ChainlinkClient {
     using Strings for uint256;
 
     struct RequestParams {
-        address userAddress;
+        address userAddress; // Not really utilized currently, might consider removing it.
         uint256 roleId;
-        bytes functionToCall;
+        bytes args;
     }
 
-    struct Result {
-        address userAddress;
-        uint248 roleId;
-        bool access;
-    }
-
-    mapping(bytes32 => RequestParams) public requests;
-    mapping(bytes32 => Result) public results;
+    mapping(bytes32 => RequestParams) public requests; // TODO: could be made internal.
 
     uint256 private immutable oracleFee;
     bytes32 private immutable jobId;
 
     error DelegatecallReverted();
+    error NoRole(address userAddress, uint256 roleId);
 
     event HasRole(address userAddress, uint256 roleId, bool access);
 
@@ -48,14 +42,16 @@ abstract contract RequestGuildRole is ChainlinkClient {
     /// @param userAddress The address of the user.
     /// @param guildIndex The index of the guild from the membership endpoint, starting from 0.
     /// @param roleId The roleId that has to be checked.
-    /// @param functionToCall The encoded calldata of the function the oracle will call on fulfillment.
+    /// @param callbackFn The identifier of the function the oracle should call when fulfulling the request.
+    /// @param args Any additional function arguments in an abi encoded form.
     function requestAccessCheck(
         address userAddress,
         uint256 guildIndex,
         uint256 roleId,
-        bytes memory functionToCall
+        bytes4 callbackFn,
+        bytes memory args
     ) public {
-        Chainlink.Request memory req = buildChainlinkRequest(jobId, address(this), this.fulfillRoleCheck.selector);
+        Chainlink.Request memory req = buildChainlinkRequest(jobId, address(this), callbackFn);
         req.add("get", string.concat("https://api.guild.xyz/v1/user/membership/", userAddress.toHexString()));
         req.add("path", string.concat(guildIndex.toString(), ",roleIds"));
         bytes32 requestId = sendOperatorRequest(req, oracleFee);
@@ -63,22 +59,19 @@ abstract contract RequestGuildRole is ChainlinkClient {
         RequestParams storage lastRequest = requests[requestId];
         lastRequest.userAddress = userAddress;
         lastRequest.roleId = roleId;
-        lastRequest.functionToCall = functionToCall;
+        lastRequest.args = args;
     }
 
-    /// @dev The function called by the Chainlink node returning the data.
-    function fulfillRoleCheck(bytes32 requestId, uint256[] memory returnedArray)
-        public
-        recordChainlinkFulfillment(requestId)
-    {
+    /// @notice Processes the data returned by the Chainlink node.
+    /// @dev Most of this code is just for processing the array.
+    /// None of this will be needed when we get the new Guild endpoint, recordChainlinkFulfillment will suffice.
+    /// @param requestId The id of the request.
+    /// @param returnedArray The array returned by the oracle.
+    modifier checkRole(bytes32 requestId, uint256[] memory returnedArray) {
+        validateChainlinkCallback(requestId); // Same as the recordChainlinkFulfillment(requestId) modifier.
+
         RequestParams storage lastRequest = requests[requestId];
-        Result storage lastResult = results[requestId];
-
         uint256 wantThisRole = lastRequest.roleId;
-        lastResult.roleId = uint248(wantThisRole);
-
-        address userAddress = lastRequest.userAddress;
-        lastResult.userAddress = userAddress;
 
         // Check if the returned array contains the role that we would like to check
         // and set the result to true if it's found.
@@ -95,24 +88,9 @@ abstract contract RequestGuildRole is ChainlinkClient {
             }
         }
 
-        lastResult.access = access;
-        emit HasRole(userAddress, wantThisRole, access);
+        if (!access) revert NoRole(lastRequest.userAddress, wantThisRole);
 
-        if (access) {
-            // solhint-disable-next-line avoid-low-level-calls
-            (bool success, bytes memory returndata) = address(this).delegatecall(lastRequest.functionToCall);
-            if (!success) {
-                if (returndata.length > 0) {
-                    // If there is a revert reason, get it.
-                    /// @solidity memory-safe-assembly
-                    assembly {
-                        let returndata_size := mload(returndata)
-                        revert(add(32, returndata), returndata_size)
-                    }
-                } else {
-                    revert DelegatecallReverted();
-                }
-            }
-        }
+        emit HasRole(lastRequest.userAddress, wantThisRole, access);
+        _;
     }
 }
