@@ -54,13 +54,7 @@ contract GatedDistributor is IGatedDistributor, RequestGuildRole, Ownable {
         if (hasClaimed[msg.sender]) revert AlreadyClaimed();
         if (IERC20(token).balanceOf(address(this)) < amount) revert OutOfTokens();
 
-        requestAccessCheck(
-            msg.sender,
-            guildIndex,
-            rewardedRole,
-            this.fulfillClaim.selector,
-            abi.encodePacked(msg.sender)
-        );
+        requestAccessCheck(msg.sender, guildIndex, rewardedRole, this.fulfillClaim.selector, abi.encode(msg.sender));
     }
 
     /// @dev The actual claim function called by the oracle if the requirements are fulfilled.
