@@ -12,7 +12,7 @@ abstract contract RequestGuildRole is ChainlinkClient {
 
     struct RequestParams {
         address userAddress; // Not really utilized currently, might consider removing it.
-        uint256 roleId;
+        uint96 roleId;
         bytes args;
     }
 
@@ -58,7 +58,7 @@ abstract contract RequestGuildRole is ChainlinkClient {
 
         RequestParams storage lastRequest = requests[requestId];
         lastRequest.userAddress = userAddress;
-        lastRequest.roleId = roleId;
+        lastRequest.roleId = uint96(roleId);
         lastRequest.args = args;
     }
 
