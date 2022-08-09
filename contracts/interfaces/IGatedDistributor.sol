@@ -37,9 +37,13 @@ interface IGatedDistributor {
     /// @param recipient The address receiving the tokens.
     function withdraw(address recipient) external;
 
-    /// @notice This event is triggered whenever a claim succeeds.
+    /// @notice This event is triggered whenever a claim succeeds (is fulfilled).
     /// @param receiver The address that received the tokens.
     event Claimed(address receiver);
+
+    /// @notice This event is triggered whenever a claim is requested.
+    /// @param receiver The address that receives the tokens.
+    event ClaimRequested(address receiver);
 
     /// @notice This event is triggered whenever a call to {prolongDistributionPeriod} succeeds.
     /// @param newDistributionEnd The time when the distribution ends.
