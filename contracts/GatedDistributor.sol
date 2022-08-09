@@ -11,9 +11,9 @@ contract GatedDistributor is IGatedDistributor, RequestGuildRole, Ownable {
     /// @inheritdoc IGatedDistributor
     uint96 public immutable rewardedRole;
     /// @inheritdoc IGatedDistributor
-    address public immutable token;
+    address public immutable rewardToken;
     /// @inheritdoc IGatedDistributor
-    uint128 public immutable amount;
+    uint128 public immutable rewardAmount;
     /// @inheritdoc IGatedDistributor
     uint128 public distributionEnd;
 
@@ -39,11 +39,17 @@ contract GatedDistributor is IGatedDistributor, RequestGuildRole, Ownable {
         bytes32 jobId,
         uint256 oracleFee
     ) RequestGuildRole(linkToken, oracleAddress, jobId, oracleFee) {
-        if (token_ == address(0)) revert InvalidParameters();
+        if (
+            token_ == address(0) ||
+            amount_ == 0 ||
+            distributionDuration == 0 ||
+            linkToken == address(0) ||
+            oracleAddress == address(0)
+        ) revert InvalidParameters();
 
         rewardedRole = rewardedRole_;
-        token = token_;
-        amount = amount_;
+        rewardToken = token_;
+        rewardAmount = amount_;
         distributionEnd = uint128(block.timestamp + distributionDuration);
     }
 
@@ -52,7 +58,7 @@ contract GatedDistributor is IGatedDistributor, RequestGuildRole, Ownable {
     function claim(uint256 guildIndex) external {
         if (block.timestamp > distributionEnd) revert DistributionEnded(block.timestamp, distributionEnd);
         if (hasClaimed[msg.sender]) revert AlreadyClaimed();
-        if (IERC20(token).balanceOf(address(this)) < amount) revert OutOfTokens();
+        if (IERC20(rewardToken).balanceOf(address(this)) < rewardAmount) revert OutOfTokens();
 
         requestAccessCheck(msg.sender, guildIndex, rewardedRole, this.fulfillClaim.selector, abi.encode(msg.sender));
     }
@@ -67,9 +73,10 @@ contract GatedDistributor is IGatedDistributor, RequestGuildRole, Ownable {
 
         if (hasClaimed[receiver]) revert AlreadyClaimed();
 
-        // Mark it claimed and send the token.
+        // Mark it claimed and send the rewardToken.
         hasClaimed[receiver] = true;
-        if (!IERC20(token).transfer(receiver, amount)) revert TransferFailed(token, address(this), receiver);
+        if (!IERC20(rewardToken).transfer(receiver, rewardAmount))
+            revert TransferFailed(rewardToken, address(this), receiver);
 
         emit Claimed(receiver);
     }
@@ -84,9 +91,10 @@ contract GatedDistributor is IGatedDistributor, RequestGuildRole, Ownable {
     /// @inheritdoc IGatedDistributor
     function withdraw(address recipient) external onlyOwner {
         if (block.timestamp <= distributionEnd) revert DistributionOngoing(block.timestamp, distributionEnd);
-        uint256 balance = IERC20(token).balanceOf(address(this));
+        uint256 balance = IERC20(rewardToken).balanceOf(address(this));
         if (balance == 0) revert AlreadyWithdrawn();
-        if (!IERC20(token).transfer(recipient, balance)) revert TransferFailed(token, address(this), recipient);
+        if (!IERC20(rewardToken).transfer(recipient, balance))
+            revert TransferFailed(rewardToken, address(this), recipient);
         emit Withdrawn(recipient, balance);
     }
 }

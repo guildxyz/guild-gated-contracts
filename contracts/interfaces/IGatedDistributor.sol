@@ -10,11 +10,11 @@ interface IGatedDistributor {
 
     /// @notice Returns the address of the token distributed by this contract.
     /// @return tokenAddress The address of the token.
-    function token() external view returns (address tokenAddress);
+    function rewardToken() external view returns (address tokenAddress);
 
     /// @notice Returns the amount of tokens an eligible address can claim.
     /// @return tokenAmount The amount in wei.
-    function amount() external view returns (uint128 tokenAmount);
+    function rewardAmount() external view returns (uint128 tokenAmount);
 
     /// @notice Returns the unix timestamp that marks the end of the token distribution.
     /// @return unixSeconds The unix timestamp in seconds.

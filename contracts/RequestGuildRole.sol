@@ -11,15 +11,15 @@ abstract contract RequestGuildRole is ChainlinkClient {
     using Strings for uint256;
 
     struct RequestParams {
-        address userAddress; // Not really utilized currently, might consider removing it.
+        address userAddress;
         uint96 roleId;
         bytes args;
     }
 
     mapping(bytes32 => RequestParams) public requests; // TODO: could be made internal.
 
-    uint256 private immutable oracleFee;
-    bytes32 private immutable jobId;
+    uint256 internal immutable oracleFee;
+    bytes32 internal immutable jobId;
 
     error DelegatecallReverted();
     error NoRole(address userAddress, uint256 roleId);
