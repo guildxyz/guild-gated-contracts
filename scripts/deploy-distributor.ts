@@ -25,7 +25,11 @@ async function main() {
     oracleFee
   );
 
-  console.log("Deploying contract...");
+  console.log(
+    `Deploying contract to ${
+      ethers.provider.network.name !== "unknown" ? ethers.provider.network.name : ethers.provider.network.chainId
+    }...`
+  );
 
   await distributor.deployed();
 
