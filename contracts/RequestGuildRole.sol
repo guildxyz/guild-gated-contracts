@@ -22,7 +22,7 @@ abstract contract RequestGuildRole is ChainlinkClient {
         bytes args;
     }
 
-    mapping(bytes32 => RequestParams) public requests; // TODO: could be made internal.
+    mapping(bytes32 => RequestParams) internal requests;
 
     uint256 internal immutable oracleFee;
     bytes32 internal immutable jobId;
