@@ -10,9 +10,15 @@ abstract contract RequestGuildRole is ChainlinkClient {
     using Strings for address;
     using Strings for uint256;
 
+    enum Access {
+        NO_ACCESS,
+        ACCESS,
+        CHECK_FAILED
+    }
+
     struct RequestParams {
         address userAddress;
-        uint96 roleId;
+        string roleId;
         bytes args;
     }
 
@@ -20,45 +26,56 @@ abstract contract RequestGuildRole is ChainlinkClient {
 
     uint256 internal immutable oracleFee;
     bytes32 internal immutable jobId;
+    string internal guildId;
 
-    error DelegatecallReverted();
-    error NoRole(address userAddress, uint256 roleId);
+    error NoRole(address userAddress, string roleId);
+    error CheckingRoleFailed(address userAddress, string roleId);
 
-    event HasRole(address userAddress, uint256 roleId, bool access);
+    event HasRole(address userAddress, string roleId);
 
     constructor(
         address linkToken,
         address oracleAddress,
         bytes32 jobId_,
-        uint256 oracleFee_
+        uint256 oracleFee_,
+        string memory guildId_
     ) {
         jobId = jobId_;
         oracleFee = oracleFee_;
+        guildId = guildId_;
         setChainlinkToken(linkToken);
         setChainlinkOracle(oracleAddress);
     }
 
     /// @notice Request the needed data from the oracle.
     /// @param userAddress The address of the user.
-    /// @param guildIndex The index of the guild from the membership endpoint, starting from 0.
     /// @param roleId The roleId that has to be checked.
     /// @param callbackFn The identifier of the function the oracle should call when fulfulling the request.
     /// @param args Any additional function arguments in an abi encoded form.
     function requestAccessCheck(
         address userAddress,
-        uint256 guildIndex,
-        uint256 roleId,
+        string memory roleId,
         bytes4 callbackFn,
         bytes memory args
     ) internal {
         Chainlink.Request memory req = buildChainlinkRequest(jobId, address(this), callbackFn);
-        req.add("get", string.concat("https://api.guild.xyz/v1/user/membership/", userAddress.toHexString()));
-        req.add("path", string.concat(guildIndex.toString(), ",roleIds"));
-        bytes32 requestId = sendOperatorRequest(req, oracleFee);
+        req.add(
+            "get",
+            string.concat(
+                "https://api.guild.xyz/v1/guild/access/",
+                guildId,
+                "/",
+                userAddress.toHexString(),
+                "?format=oracle"
+            )
+        );
+        req.add("path", roleId);
+        req.addInt("multiply", 1);
+        bytes32 requestId = sendChainlinkRequest(req, oracleFee);
 
         RequestParams storage lastRequest = requests[requestId];
         lastRequest.userAddress = userAddress;
-        lastRequest.roleId = uint96(roleId);
+        lastRequest.roleId = roleId;
         lastRequest.args = args;
     }
 
@@ -66,31 +83,17 @@ abstract contract RequestGuildRole is ChainlinkClient {
     /// @dev Most of this code is just for processing the array.
     /// None of this will be needed when we get the new Guild endpoint, recordChainlinkFulfillment will suffice.
     /// @param requestId The id of the request.
-    /// @param returnedArray The array returned by the oracle.
-    modifier checkRole(bytes32 requestId, uint256[] memory returnedArray) {
+    /// @param access The value returned by the oracle.
+    modifier checkRole(bytes32 requestId, uint256 access) {
         validateChainlinkCallback(requestId); // Same as the recordChainlinkFulfillment(requestId) modifier.
 
         RequestParams storage lastRequest = requests[requestId];
-        uint256 wantThisRole = lastRequest.roleId;
 
-        // Check if the returned array contains the role that we would like to check
-        // and set the result to true if it's found.
-        bool access;
-        uint256 length = returnedArray.length;
-        for (uint256 i; i < length; ) {
-            if (returnedArray[i] == wantThisRole) {
-                access = true;
-                break;
-            }
+        if (access == uint256(Access.NO_ACCESS)) revert NoRole(lastRequest.userAddress, lastRequest.roleId);
+        if (access >= uint256(Access.CHECK_FAILED))
+            revert CheckingRoleFailed(lastRequest.userAddress, lastRequest.roleId);
 
-            unchecked {
-                ++i;
-            }
-        }
-
-        if (!access) revert NoRole(lastRequest.userAddress, wantThisRole);
-
-        emit HasRole(lastRequest.userAddress, wantThisRole, access);
+        emit HasRole(lastRequest.userAddress, lastRequest.roleId);
         _;
     }
 }

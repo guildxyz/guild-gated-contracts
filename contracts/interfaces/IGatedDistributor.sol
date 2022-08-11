@@ -6,7 +6,7 @@ pragma solidity ^0.8.0;
 interface IGatedDistributor {
     /// @notice Returns the id of the role in Guild.
     /// @return role The id of the role.
-    function rewardedRole() external view returns (uint96 role);
+    function rewardedRole() external view returns (string memory role);
 
     /// @notice Returns the address of the token distributed by this contract.
     /// @return tokenAddress The address of the token.
@@ -26,8 +26,7 @@ interface IGatedDistributor {
     function hasClaimed(address account) external view returns (bool claimed);
 
     /// @notice Claim the given amount of the token to the given address. Reverts if the inputs are invalid.
-    /// @param guildIndex The index of the Guild from the membership endpoint. Temporary solution.
-    function claim(uint256 guildIndex) external;
+    function claim() external;
 
     /// @notice Prolongs the distribution period of the tokens. Callable only by the owner.
     /// @param additionalSeconds The seconds to add to the current distributionEnd.

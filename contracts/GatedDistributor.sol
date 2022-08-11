@@ -9,7 +9,7 @@ import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 /// @title A Guild-gated ERC20 distributor.
 contract GatedDistributor is IGatedDistributor, RequestGuildRole, Ownable {
     /// @inheritdoc IGatedDistributor
-    uint96 public immutable rewardedRole;
+    string public rewardedRole;
     /// @inheritdoc IGatedDistributor
     address public immutable rewardToken;
     /// @inheritdoc IGatedDistributor
@@ -24,7 +24,8 @@ contract GatedDistributor is IGatedDistributor, RequestGuildRole, Ownable {
     /// @param token_ The address of the ERC20 token to distribute.
     /// @param amount_ The amount of tokens an eligible address will be able to claim.
     /// @param distributionDuration The time interval while the distribution lasts in seconds.
-    /// @param rewardedRole_ The Guild id of the rewarded role.
+    /// @param guildId The id of the guild the rewarded role is in.
+    /// @param rewardedRole_ The id of the rewarded role on Guild.
     /// @param linkToken The address of the Chainlink token.
     /// @param oracleAddress The address of the oracle processing requests.
     /// @param jobId The id of the oracle job.
@@ -33,12 +34,13 @@ contract GatedDistributor is IGatedDistributor, RequestGuildRole, Ownable {
         address token_,
         uint128 amount_,
         uint256 distributionDuration,
-        uint96 rewardedRole_,
+        string memory guildId,
+        string memory rewardedRole_,
         address linkToken,
         address oracleAddress,
         bytes32 jobId,
         uint256 oracleFee
-    ) RequestGuildRole(linkToken, oracleAddress, jobId, oracleFee) {
+    ) RequestGuildRole(linkToken, oracleAddress, jobId, oracleFee, guildId) {
         if (
             token_ == address(0) ||
             amount_ == 0 ||
@@ -54,22 +56,18 @@ contract GatedDistributor is IGatedDistributor, RequestGuildRole, Ownable {
     }
 
     /// @inheritdoc IGatedDistributor
-    /// @dev TODO when we have a more suitable Guild endpoint: remove guildIndex parameter
-    function claim(uint256 guildIndex) external {
+    function claim() external {
         if (block.timestamp > distributionEnd) revert DistributionEnded(block.timestamp, distributionEnd);
         if (hasClaimed[msg.sender]) revert AlreadyClaimed();
         if (IERC20(rewardToken).balanceOf(address(this)) < rewardAmount) revert OutOfTokens();
 
-        requestAccessCheck(msg.sender, guildIndex, rewardedRole, this.fulfillClaim.selector, abi.encode(msg.sender));
+        requestAccessCheck(msg.sender, rewardedRole, this.fulfillClaim.selector, abi.encode(msg.sender));
 
         emit ClaimRequested(msg.sender);
     }
 
     /// @dev The actual claim function called by the oracle if the requirements are fulfilled.
-    function fulfillClaim(bytes32 requestId, uint256[] memory returnedArray)
-        public
-        checkRole(requestId, returnedArray)
-    {
+    function fulfillClaim(bytes32 requestId, uint256 access) public checkRole(requestId, access) {
         // TODO: requests[requestId].userAddress could be used, this is just for demonstrating this feature.
         address receiver = abi.decode(requests[requestId].args, (address));
 
