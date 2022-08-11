@@ -6,7 +6,7 @@ pragma solidity ^0.8.0;
 interface IGatedDistributor {
     /// @notice Returns the id of the role in Guild.
     /// @return role The id of the role.
-    function rewardedRole() external view returns (string memory role);
+    function rewardedRole() external view returns (uint96 role);
 
     /// @notice Returns the address of the token distributed by this contract.
     /// @return tokenAddress The address of the token.

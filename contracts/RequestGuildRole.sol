@@ -8,7 +8,7 @@ import { Strings } from "@openzeppelin/contracts/utils/Strings.sol";
 abstract contract RequestGuildRole is ChainlinkClient {
     using Chainlink for Chainlink.Request;
     using Strings for address;
-    using Strings for uint256;
+    using Strings for uint96;
 
     enum Access {
         NO_ACCESS,
@@ -18,7 +18,7 @@ abstract contract RequestGuildRole is ChainlinkClient {
 
     struct RequestParams {
         address userAddress;
-        string roleId;
+        uint96 roleId;
         bytes args;
     }
 
@@ -28,10 +28,10 @@ abstract contract RequestGuildRole is ChainlinkClient {
     bytes32 internal immutable jobId;
     string internal guildId;
 
-    error NoRole(address userAddress, string roleId);
-    error CheckingRoleFailed(address userAddress, string roleId);
+    error NoRole(address userAddress, uint96 roleId);
+    error CheckingRoleFailed(address userAddress, uint96 roleId);
 
-    event HasRole(address userAddress, string roleId);
+    event HasRole(address userAddress, uint96 roleId);
 
     constructor(
         address linkToken,
@@ -54,7 +54,7 @@ abstract contract RequestGuildRole is ChainlinkClient {
     /// @param args Any additional function arguments in an abi encoded form.
     function requestAccessCheck(
         address userAddress,
-        string memory roleId,
+        uint96 roleId,
         bytes4 callbackFn,
         bytes memory args
     ) internal {
@@ -69,7 +69,7 @@ abstract contract RequestGuildRole is ChainlinkClient {
                 "?format=oracle"
             )
         );
-        req.add("path", roleId);
+        req.add("path", roleId.toString());
         req.addInt("multiply", 1);
         bytes32 requestId = sendChainlinkRequest(req, oracleFee);
 

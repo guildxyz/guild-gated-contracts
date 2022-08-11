@@ -9,7 +9,7 @@ import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 /// @title A Guild-gated ERC20 distributor.
 contract GatedDistributor is IGatedDistributor, RequestGuildRole, Ownable {
     /// @inheritdoc IGatedDistributor
-    string public rewardedRole;
+    uint96 public immutable rewardedRole;
     /// @inheritdoc IGatedDistributor
     address public immutable rewardToken;
     /// @inheritdoc IGatedDistributor
@@ -35,7 +35,7 @@ contract GatedDistributor is IGatedDistributor, RequestGuildRole, Ownable {
         uint128 amount_,
         uint256 distributionDuration,
         string memory guildId,
-        string memory rewardedRole_,
+        uint96 rewardedRole_,
         address linkToken,
         address oracleAddress,
         bytes32 jobId,
