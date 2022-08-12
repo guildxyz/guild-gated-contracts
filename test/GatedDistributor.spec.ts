@@ -240,7 +240,7 @@ describe("GatedDistributor", function () {
       // );
     });
 
-    it("should set the address' claim status", async () => {
+    it("should set the address's claim status", async () => {
       await chainlinkOperator.tryFulfillOracleRequest(requestId, oracleResponse.ACCESS);
       expect(await distributor.hasClaimed(wallet0.address)).to.eq(true);
     });

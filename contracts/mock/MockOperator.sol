@@ -88,7 +88,7 @@ contract MockOperator {
     /**
      * @notice Called by the Chainlink node to fulfill requests.
      * @dev Given params must hash back to the commitment stored from `oracleRequest`.
-     * Will call the callback address' callback function without bubbling up error
+     * Will call the callback address's callback function without bubbling up error
      * checking in a `require` so that the node can get paid.
      * @param _requestId The fulfillment request ID that must match the requester's.
      * @param _data The data to return to the consuming contract.
@@ -112,7 +112,7 @@ contract MockOperator {
     /**
      * @notice Called by the Chainlink node to fulfill multiword requests.
      * @dev Given params must hash back to the commitment stored from `oracleRequest`.
-     * Will call the callback address' callback function without bubbling up error
+     * Will call the callback address's callback function without bubbling up error
      * checking in a `require` so that the node can get paid.
      * @param _requestId The fulfillment request ID that must match the requester's.
      * @param _data The data to return to the consuming contract.

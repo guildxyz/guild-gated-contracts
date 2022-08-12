@@ -27,9 +27,9 @@ contract GatedDistributor is IGatedDistributor, RequestGuildRole, Ownable {
     /// @param guildId The id of the guild the rewarded role is in.
     /// @param rewardedRole_ The id of the rewarded role on Guild.
     /// @param linkToken The address of the Chainlink token.
-    /// @param oracleAddress The address of the oracle processing requests.
-    /// @param jobId The id of the oracle job.
-    /// @param oracleFee The amount of tokens the oracle needs for every request.
+    /// @param oracleAddress The address of the oracle processing the requests.
+    /// @param jobId The id of the job to run on the oracle.
+    /// @param oracleFee The amount of tokens to forward to the oracle with every request.
     constructor(
         address token_,
         uint128 amount_,

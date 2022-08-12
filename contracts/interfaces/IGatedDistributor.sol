@@ -25,7 +25,7 @@ interface IGatedDistributor {
     /// @return claimed Whether the address has claimed their tokens.
     function hasClaimed(address account) external view returns (bool claimed);
 
-    /// @notice Claim the given amount of the token to the given address. Reverts if the inputs are invalid.
+    /// @notice Claims the given amount of the token to the given address. Reverts if the inputs are invalid.
     function claim() external;
 
     /// @notice Prolongs the distribution period of the tokens. Callable only by the owner.
@@ -36,19 +36,19 @@ interface IGatedDistributor {
     /// @param recipient The address receiving the tokens.
     function withdraw(address recipient) external;
 
-    /// @notice This event is triggered whenever a claim succeeds (is fulfilled).
+    /// @notice Event emitted whenever a claim succeeds (is fulfilled).
     /// @param receiver The address that received the tokens.
     event Claimed(address receiver);
 
-    /// @notice This event is triggered whenever a claim is requested.
+    /// @notice Event emitted whenever a claim is requested.
     /// @param receiver The address that receives the tokens.
     event ClaimRequested(address receiver);
 
-    /// @notice This event is triggered whenever a call to {prolongDistributionPeriod} succeeds.
+    /// @notice Event emitted whenever a call to {prolongDistributionPeriod} succeeds.
     /// @param newDistributionEnd The time when the distribution ends.
     event DistributionProlonged(uint128 newDistributionEnd);
 
-    /// @notice This event is triggered whenever a call to {withdraw} succeeds.
+    /// @notice Event emitted whenever a call to {withdraw} succeeds.
     /// @param account The address that received the tokens.
     /// @param amount The amount of tokens the address received.
     event Withdrawn(address account, uint256 amount);
