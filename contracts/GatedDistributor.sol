@@ -68,10 +68,8 @@ contract GatedDistributor is IGatedDistributor, RequestGuildRole, Ownable {
 
     /// @dev The actual claim function called by the oracle if the requirements are fulfilled.
     function fulfillClaim(bytes32 requestId, uint256 access) public checkRole(requestId, access) {
-        // TODO: requests[requestId].userAddress could be used, this is just for demonstrating this feature.
+        // Note: requests[requestId].userAddress could be used, this is just for demonstrating this feature.
         address receiver = abi.decode(requests[requestId].args, (address));
-
-        if (hasClaimed[receiver]) revert AlreadyClaimed();
 
         // Mark it claimed and send the rewardToken.
         hasClaimed[receiver] = true;
