@@ -108,8 +108,6 @@ abstract contract RequestGuildRole is ChainlinkClient {
     }
 
     /// @notice Processes the data returned by the Chainlink node.
-    /// @dev Most of this code is just for processing the array.
-    /// None of this will be needed when we get the new Guild endpoint, recordChainlinkFulfillment will suffice.
     /// @param requestId The id of the request.
     /// @param access The value returned by the oracle.
     modifier checkRole(bytes32 requestId, uint256 access) {
