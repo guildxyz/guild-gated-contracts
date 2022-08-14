@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: MIT
-
 pragma solidity ^0.8.0;
 
 /// @title Provides ERC20 token distribution based on a Merkle tree.
