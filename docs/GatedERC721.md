@@ -1,6 +1,6 @@
-# GatedDistributor
+# GatedERC721
 
-A Guild-gated ERC20 distributor.
+An ERC721 token that can be claimed only by those holding a specific role on guild.xyz.
 
 ## Variables
 
@@ -12,29 +12,29 @@ uint96 rewardedRole
 
 Returns the id of the role in Guild.
 
-### rewardToken
+### maxSupply
 
 ```solidity
-address rewardToken
+uint256 maxSupply
 ```
 
-Returns the address of the token distributed by this contract.
+The maximum number of NFTs that can ever be minted.
 
-### rewardAmount
+### totalSupply
 
 ```solidity
-uint128 rewardAmount
+uint256 totalSupply
 ```
 
-Returns the amount of tokens an eligible address can claim.
+The total amount of tokens stored by the contract.
 
-### distributionEnd
+### cid
 
 ```solidity
-uint128 distributionEnd
+string cid
 ```
 
-Returns the unix timestamp that marks the end of the token distribution.
+The ipfs hash, under which the off-chain metadata is uploaded.
 
 ### hasClaimed
 
@@ -42,7 +42,7 @@ Returns the unix timestamp that marks the end of the token distribution.
 mapping(address => bool) hasClaimed
 ```
 
-Returns true if the address has already claimed their tokens.
+Returns true if the address has already claimed their token.
 
 ## Functions
 
@@ -50,9 +50,10 @@ Returns true if the address has already claimed their tokens.
 
 ```solidity
 function constructor(
-    address token_,
-    uint128 amount_,
-    uint256 distributionDuration,
+    string name,
+    string symbol,
+    string cid_,
+    uint256 maxSupply_,
     string guildId,
     uint96 rewardedRole_,
     address linkToken,
@@ -62,15 +63,16 @@ function constructor(
 ) 
 ```
 
-Sets the config and the oracle details.
+Sets metadata and the oracle details.
 
 #### Parameters
 
 | Name | Type | Description |
 | :--- | :--- | :---------- |
-| `token_` | address | The address of the ERC20 token to distribute. |
-| `amount_` | uint128 | The amount of tokens an eligible address will be able to claim. |
-| `distributionDuration` | uint256 | The time interval while the distribution lasts in seconds. |
+| `name` | string | The name of the token. |
+| `symbol` | string | The symbol of the token. |
+| `cid_` | string | The ipfs hash, under which the off-chain metadata is uploaded. |
+| `maxSupply_` | uint256 | The maximum number of NFTs that can ever be minted. |
 | `guildId` | string | The id of the guild the rewarded role is in. |
 | `rewardedRole_` | uint96 | The id of the rewarded role on Guild. |
 | `linkToken` | address | The address of the Chainlink token. |
@@ -84,7 +86,7 @@ Sets the config and the oracle details.
 function claim() external
 ```
 
-Claims the given amount of the token to the given address. Reverts if the inputs are invalid.
+Claims tokens to the given address.
 
 ### fulfillClaim
 
@@ -104,35 +106,37 @@ The actual claim function called by the oracle if the requirements are fulfilled
 | `requestId` | bytes32 |  |
 | `access` | uint256 |  |
 
-### prolongDistributionPeriod
+### _safeMint
 
 ```solidity
-function prolongDistributionPeriod(
-    uint128 additionalSeconds
-) external
+function _safeMint(
+    address to,
+    uint256 tokenId
+) internal
 ```
 
-Prolongs the distribution period of the tokens. Callable only by the owner.
+An optimized version of {_safeMint} using custom errors.
 
 #### Parameters
 
 | Name | Type | Description |
 | :--- | :--- | :---------- |
-| `additionalSeconds` | uint128 | The seconds to add to the current distributionEnd. |
+| `to` | address |  |
+| `tokenId` | uint256 |  |
 
-### withdraw
+### tokenURI
 
 ```solidity
-function withdraw(
-    address recipient
-) external
+function tokenURI(
+    uint256 tokenId
+) public returns (string)
 ```
 
-Sends the tokens remaining after the distribution has ended to `recipient`. Callable only by the owner.
+Returns the Uniform Resource Identifier (URI) for `tokenId` token.
 
 #### Parameters
 
 | Name | Type | Description |
 | :--- | :--- | :---------- |
-| `recipient` | address | The address receiving the tokens. |
+| `tokenId` | uint256 | The id of the token. |
 

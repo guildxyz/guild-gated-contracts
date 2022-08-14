@@ -64,13 +64,13 @@ function hasClaimed(
 ) external returns (bool claimed)
 ```
 
-Returns true if the address has already claimed.
+Returns true if the address has already claimed their tokens.
 
 #### Parameters
 
 | Name | Type | Description |
 | :--- | :--- | :---------- |
-| `account` | address | User addresses. |
+| `account` | address | The user's address. |
 
 #### Return Values
 
