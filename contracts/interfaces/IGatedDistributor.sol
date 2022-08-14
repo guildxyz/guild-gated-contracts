@@ -20,8 +20,8 @@ interface IGatedDistributor {
     /// @return unixSeconds The unix timestamp in seconds.
     function distributionEnd() external view returns (uint128 unixSeconds);
 
-    /// @notice Returns true if the address has already claimed.
-    /// @param account User addresses.
+    /// @notice Returns true if the address has already claimed their tokens.
+    /// @param account The user's address.
     /// @return claimed Whether the address has claimed their tokens.
     function hasClaimed(address account) external view returns (bool claimed);
 
