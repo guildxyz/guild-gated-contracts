@@ -1,6 +1,14 @@
-# Guild Gated Contracts
+# Guild-Gated Contracts
 
-Smart contracts with access control by [guild.xyz](https://guild.xyz), via [Chainlink](https://chain.link) oracles.
+Smart contracts with access control by [Guild](https://guild.xyz), via [Chainlink](https://chain.link) oracles.
+
+The **[RequestGuildRole](contracts/RequestGuildRole.sol)** contract is suitable for creating any kind of Guild-gated contracts by building upon it. Find out how in [USAGE.md](USAGE.md).  
+The first examples leveraging this new feature:
+
+- GatedDistributor: an ERC20 airdrop contract for a specific role in a specific guild.
+- GatedERC721: an ERC721 Non-Fungible Token that can be claimed only be those holding a specific role in a specific guild.
+
+A detailed documentation can be found in the _[docs](docs)_ folder.
 
 ## Requirements
 
@@ -53,13 +61,15 @@ Networks can be configured in _hardhat.config.ts_. We've preconfigured the follo
 
 ## Verification
 
-For automatic verification on block explorers, you can use the Etherscan plugin:
+For source code verification on block explorers, you can use the Etherscan plugin:
 
 ```bash
 npx hardhat verify [contractAddress] [constructorArguments] --network [networkName]
 ```
 
-For more detailed instructions, check out it's documentation [here](https://hardhat.org/plugins/nomiclabs-hardhat-etherscan#usage).
+Note: the contract's address and the constructor arguments are printed by the deploy script, so they can easily be copied to this command.
+
+For more detailed instructions, check out the plugin's documentation [here](https://hardhat.org/plugins/nomiclabs-hardhat-etherscan#usage).
 
 ## Linting
 
