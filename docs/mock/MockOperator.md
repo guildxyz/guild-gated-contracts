@@ -25,7 +25,7 @@ contract LinkTokenInterface linkToken
 ### constructor
 
 ```solidity
-function constructor(
+constructor(
     address _link
 ) 
 ```

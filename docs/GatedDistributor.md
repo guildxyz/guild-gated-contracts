@@ -49,7 +49,7 @@ Returns true if the address has already claimed their tokens.
 ### constructor
 
 ```solidity
-function constructor(
+constructor(
     address token_,
     uint128 amount_,
     uint256 distributionDuration,

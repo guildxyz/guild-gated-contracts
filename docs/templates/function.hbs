@@ -1,7 +1,7 @@
 {{h}} {{name}}
 
 ```solidity
-function {{name}}({{#if params}}
+{{#unless (or (or (eq name "constructor") (eq name "fallback")) (eq name "receive"))}}function {{/unless}}{{name}}({{#if params}}
     {{#each params}}
     {{type}} {{name}}{{#if @last}}{{else}},{{/if}}
     {{/each}}

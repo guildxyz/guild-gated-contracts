@@ -49,7 +49,7 @@ Returns true if the address has already claimed their token.
 ### constructor
 
 ```solidity
-function constructor(
+constructor(
     string name,
     string symbol,
     string cid_,

@@ -35,7 +35,7 @@ Use only for tests.
 ### constructor
 
 ```solidity
-function constructor(
+constructor(
     string name,
     string symbol
 ) 

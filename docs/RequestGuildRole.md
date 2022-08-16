@@ -45,7 +45,7 @@ The id of the guild the rewarded role(s) is/are in.
 ### constructor
 
 ```solidity
-function constructor(
+constructor(
     address linkToken,
     address oracleAddress,
     bytes32 jobId_,
