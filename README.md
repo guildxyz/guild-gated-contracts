@@ -20,7 +20,7 @@ Pull the repository from GitHub, then install its dependencies by executing this
 npm install
 ```
 
-Certain actions, like deploying to a public network or verifying source code on block explorers, need environment variables in a file named `.env`. See [.env.example](.env.example) for more info.
+Certain actions, like deploying to a public network or verifying source code on block explorers, need environment variables in a file named `.env`. See _[.env.example](.env.example)_ for more info.
 
 ## Contract deployment
 
@@ -30,7 +30,7 @@ To deploy the smart contracts to a network, replace _[networkName]_ with the nam
 hardhat run scripts/[scriptName] --network [networkName]
 ```
 
-Networks can be configured in _hardhat.config.ts_. We've preconfigured the following:
+Networks can be configured in _[hardhat.config.ts](hardhat.config.ts)_. We've preconfigured the following:
 
 - `hardhat` (for local testing, default)
 - `ethereum` (Ethereum Mainnet)
@@ -83,10 +83,10 @@ To run the unit tests written for this project, execute this command in a termin
 npm test
 ```
 
-To run the unit tests only in a specific file, just append the path to the command. For example, to run tests just for Greeter:
+To run the unit tests only in a specific file, just append the path to the command. For example, to run tests just for GatedERC721:
 
 ```bash
-npm test test/GreeterTest.ts
+npm test test/GatedERC721.spec.ts
 ```
 
 ## Documentation
