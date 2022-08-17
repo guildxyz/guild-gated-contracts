@@ -10,33 +10,17 @@ The first examples leveraging this new feature:
 
 A detailed documentation can be found in the _[docs](docs)_ folder.
 
-## Requirements
-
-To run the project you need:
-
-- [Node.js](https://nodejs.org) development environment.
-- a file named `.env`
-
-Your `.env` file should contain the following variables:
-
-```bash
-# The private key of your wallet.
-PRIVATE_KEY=
-
-# Your infura.io project ID for deploying to Ethereum networks.
-INFURA_ID=
-
-# Your API key for verification.
-ETHERSCAN_API_KEY=
-```
-
 ## Setup
+
+To run the project you need [Node.js](https://nodejs.org) development environment.
 
 Pull the repository from GitHub, then install its dependencies by executing this command:
 
 ```bash
 npm install
 ```
+
+Certain actions, like deploying to a public network or verifying source code on block explorers, need environment variables in a file named `.env`. See [.env.example](.env.example) for more info.
 
 ## Contract deployment
 
