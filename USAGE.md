@@ -44,7 +44,7 @@ You can Guild-gate any of the functions in your own contract in a few simple ste
 
    For more info on what these are, refer to the [docs](docs/RequestGuildRole.md#constructor).  
    For the LINK token's address on different chains check [this page](https://docs.chain.link/docs/link-token-contracts).  
-   Guide to find a suitable oracle job [here](https://docs.chain.link/docs/listing-services/#find-a-job).
+   Guide to find a suitable oracle job [here](https://docs.chain.link/docs/listing-services/#find-a-job). Look for a GET > UINT256 job.
 
 4. You'll probably want to store the id of the role you want to gate with. It's a `uint96` for gas optimization reasons.  
    To get the id of your preferred role, you can use the following enpoint: `https://api.guild.xyz/v1/guild/[your-guild-id]`, where _[your-guild-id]_ is the id of your Guild.  
