@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: MIT
-pragma solidity 0.8.16;
+pragma solidity 0.8.17;
 
 import { IGatedDistributor } from "./interfaces/IGatedDistributor.sol";
 import { RequestGuildRole } from "./RequestGuildRole.sol";
