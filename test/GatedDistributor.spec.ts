@@ -298,7 +298,6 @@ describe("GatedDistributor", function () {
     });
 
     it("allows claiming with a new distribution period", async () => {
-      await setBalance(rewardToken, distributor.address, rewardAmount);
       await increaseTime(distributionDuration + 120);
       await expect(distributor.claim())
         .to.be.revertedWithCustomError(distributor, "DistributionEnded")
