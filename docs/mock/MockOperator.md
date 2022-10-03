@@ -264,6 +264,8 @@ modifier isValidRequest(bytes32 _requestId)
 
 _Reverts if request ID does not exist._
 
+#### Parameters
+
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | _requestId | bytes32 | The given request ID to check in stored `commitments`. |
@@ -275,6 +277,8 @@ modifier checkCallbackAddress(address _to)
 ```
 
 _Reverts if the callback address is the LINK token._
+
+#### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -296,6 +300,8 @@ modifier validateMultiWordResponseId(bytes32 requestId, bytes data)
 ```
 
 _Reverts if the first 32 bytes of the bytes array is not equal to requestId_
+
+#### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |

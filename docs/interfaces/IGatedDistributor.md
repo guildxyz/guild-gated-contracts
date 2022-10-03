@@ -200,6 +200,8 @@ error DistributionEnded(uint256 current, uint256 end)
 
 Error thrown when the distribution period ended.
 
+#### Parameters
+
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | current | uint256 | The current timestamp. |
@@ -212,6 +214,8 @@ error DistributionOngoing(uint256 current, uint256 end)
 ```
 
 Error thrown when the distribution period did not end yet.
+
+#### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -257,6 +261,8 @@ error TransferFailed(address token, address from, address to)
 ```
 
 Error thrown when a transfer failed.
+
+#### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |

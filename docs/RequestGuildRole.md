@@ -98,6 +98,8 @@ modifier checkRole(bytes32 requestId, uint256 access)
 
 Processes the data returned by the Chainlink node.
 
+#### Parameters
+
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | requestId | bytes32 | The id of the request. |
@@ -133,6 +135,8 @@ error NoRole(address userAddress, uint96 roleId)
 
 Error thrown when an address doesn't have the needed role.
 
+#### Parameters
+
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | userAddress | address | The address of the queried user. |
@@ -145,6 +149,8 @@ error CheckingRoleFailed(address userAddress, uint96 roleId)
 ```
 
 Error thrown when a role check failed due to an unavailable server or invalid return data.
+
+#### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |

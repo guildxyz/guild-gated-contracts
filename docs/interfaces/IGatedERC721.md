@@ -131,6 +131,8 @@ error NonExistentToken(uint256 tokenId)
 
 Error thrown when trying to query info about a token that's not (yet) minted.
 
+#### Parameters
+
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | tokenId | uint256 | The queried id. |
@@ -142,6 +144,8 @@ error TokenIdOutOfBounds(uint256 tokenId, uint256 maxSupply)
 ```
 
 Error thrown when the tokenId is higher than the maximum supply.
+
+#### Parameters
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
