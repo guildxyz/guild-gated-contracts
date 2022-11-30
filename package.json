@@ -4,8 +4,8 @@
   "description": "",
   "scripts": {
     "docgen": "hardhat docgen",
-    "lint-contracts": "solhint 'contracts/**/*.sol'",
-    "lint-ts": "eslint '**/*.{js,ts}'",
+    "lint-contracts": "solhint --max-warnings 0 'contracts/**/*.sol'",
+    "lint-ts": "eslint --max-warnings 0 '**/*.{js,ts}'",
     "lint": "npm run lint-contracts && npm run lint-ts",
     "test": "hardhat test"
   },
