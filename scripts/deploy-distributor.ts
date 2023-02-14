@@ -15,6 +15,13 @@ const oracleFee = ethers.BigNumber.from("50000000000000000");
 
 async function main() {
   const GatedDistributor = await ethers.getContractFactory("GatedDistributor");
+
+  console.log(
+    `Deploying contract to ${
+      ethers.provider.network.name !== "unknown" ? ethers.provider.network.name : ethers.provider.network.chainId
+    }...`
+  );
+
   const distributor = await GatedDistributor.deploy(
     token,
     amount,
@@ -26,13 +33,6 @@ async function main() {
     jobId,
     oracleFee
   );
-
-  console.log(
-    `Deploying contract to ${
-      ethers.provider.network.name !== "unknown" ? ethers.provider.network.name : ethers.provider.network.chainId
-    }...`
-  );
-
   await distributor.deployed();
 
   console.log("Gated Distributor contract deployed to:", distributor.address);
