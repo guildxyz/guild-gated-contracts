@@ -18,13 +18,6 @@ const oracleFee = ethers.BigNumber.from("50000000000000000");
 
 async function main() {
   const GatedERC721 = await ethers.getContractFactory("GatedERC721");
-
-  console.log(
-    `Deploying contract to ${
-      ethers.provider.network.name !== "unknown" ? ethers.provider.network.name : ethers.provider.network.chainId
-    }...`
-  );
-
   const nft = await GatedERC721.deploy(
     name,
     symbol,
@@ -37,6 +30,13 @@ async function main() {
     jobId,
     oracleFee
   );
+
+  console.log(
+    `Deploying contract to ${
+      ethers.provider.network.name !== "unknown" ? ethers.provider.network.name : ethers.provider.network.chainId
+    }...`
+  );
+
   await nft.deployed();
 
   console.log("Gated ERC721 contract deployed to:", nft.address);
