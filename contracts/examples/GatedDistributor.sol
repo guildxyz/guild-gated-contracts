@@ -8,16 +8,11 @@ import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 /// @title A Guild-gated ERC20 distributor.
 contract GatedDistributor is IGatedDistributor, GuildOracle, Ownable {
-    /// @inheritdoc IGatedDistributor
     uint96 public immutable rewardedRole;
-    /// @inheritdoc IGatedDistributor
     address public immutable rewardToken;
-    /// @inheritdoc IGatedDistributor
     uint128 public immutable rewardAmount;
-    /// @inheritdoc IGatedDistributor
     uint128 public distributionEnd;
 
-    /// @inheritdoc IGatedDistributor
     mapping(address => bool) public hasClaimed;
 
     /// @notice Sets the config and the oracle details.
@@ -55,7 +50,6 @@ contract GatedDistributor is IGatedDistributor, GuildOracle, Ownable {
         distributionEnd = uint128(block.timestamp + distributionDuration);
     }
 
-    /// @inheritdoc IGatedDistributor
     function claim() external {
         if (block.timestamp > distributionEnd) revert DistributionEnded(block.timestamp, distributionEnd);
         if (hasClaimed[msg.sender]) revert AlreadyClaimed();
@@ -79,14 +73,12 @@ contract GatedDistributor is IGatedDistributor, GuildOracle, Ownable {
         emit Claimed(receiver);
     }
 
-    /// @inheritdoc IGatedDistributor
     function prolongDistributionPeriod(uint128 additionalSeconds) external onlyOwner {
         uint128 newDistributionEnd = distributionEnd + additionalSeconds;
         distributionEnd = newDistributionEnd;
         emit DistributionProlonged(newDistributionEnd);
     }
 
-    /// @inheritdoc IGatedDistributor
     function withdraw(address recipient) external onlyOwner {
         if (block.timestamp <= distributionEnd) revert DistributionOngoing(block.timestamp, distributionEnd);
         uint256 balance = IERC20(rewardToken).balanceOf(address(this));

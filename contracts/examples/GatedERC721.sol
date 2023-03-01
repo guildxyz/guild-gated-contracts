@@ -13,17 +13,13 @@ import { MerkleProof } from "@openzeppelin/contracts/utils/cryptography/MerklePr
 contract GatedERC721 is GuildOracle, ERC721, IGatedERC721, Ownable {
     using Strings for uint256;
 
-    /// @inheritdoc IGatedERC721
     uint96 public immutable rewardedRole;
 
-    /// @inheritdoc IGatedERC721
     uint256 public immutable maxSupply;
-    /// @inheritdoc IGatedERC721
     uint256 public totalSupply;
     /// @notice The ipfs hash, under which the off-chain metadata is uploaded.
     string internal cid;
 
-    /// @inheritdoc IGatedERC721
     mapping(address => bool) public hasClaimed;
 
     /// @notice Sets metadata and the oracle details.
@@ -56,7 +52,6 @@ contract GatedERC721 is GuildOracle, ERC721, IGatedERC721, Ownable {
         rewardedRole = rewardedRole_;
     }
 
-    /// @inheritdoc IGatedERC721
     function claim() external override {
         if (hasClaimed[msg.sender]) revert AlreadyClaimed();
 
