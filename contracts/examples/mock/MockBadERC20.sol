@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./MockERC20.sol";
+import { MockERC20 } from "./MockERC20.sol";
+import { ERC20 } from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 /// @title An ERC20 token that returns false on transfer.
 /// @dev Use only for tests.
