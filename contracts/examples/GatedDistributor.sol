@@ -2,12 +2,12 @@
 pragma solidity 0.8.19;
 
 import { IGatedDistributor } from "./interfaces/IGatedDistributor.sol";
-import { RequestGuildRole } from "../RequestGuildRole.sol";
+import { GuildOracle } from "../GuildOracle.sol";
 import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 /// @title A Guild-gated ERC20 distributor.
-contract GatedDistributor is IGatedDistributor, RequestGuildRole, Ownable {
+contract GatedDistributor is IGatedDistributor, GuildOracle, Ownable {
     /// @inheritdoc IGatedDistributor
     uint96 public immutable rewardedRole;
     /// @inheritdoc IGatedDistributor
@@ -40,7 +40,7 @@ contract GatedDistributor is IGatedDistributor, RequestGuildRole, Ownable {
         address oracleAddress,
         bytes32 jobId,
         uint256 oracleFee
-    ) RequestGuildRole(linkToken, oracleAddress, jobId, oracleFee, guildId) {
+    ) GuildOracle(linkToken, oracleAddress, jobId, oracleFee, guildId) {
         if (
             token_ == address(0) ||
             amount_ == 0 ||

@@ -8,7 +8,7 @@ import { Strings } from "@openzeppelin/contracts/utils/Strings.sol";
 /// @title Guild.xyz role checker.
 /// @notice Base contract to check an address's roles on Guild.xyz via a Chainlink oracle.
 /// @dev Inherit from this contract to have easy access to Guild's access check.
-abstract contract RequestGuildRole is ChainlinkClient {
+abstract contract GuildOracle is ChainlinkClient {
     using Chainlink for Chainlink.Request;
     using Strings for address;
     using Strings for uint96;

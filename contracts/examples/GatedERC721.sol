@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.19;
 
-import { RequestGuildRole } from "../RequestGuildRole.sol";
+import { GuildOracle } from "../GuildOracle.sol";
 import { IGatedERC721 } from "./interfaces/IGatedERC721.sol";
 import { IERC721Metadata } from "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
 import { ERC721 } from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
@@ -10,7 +10,7 @@ import { Strings } from "@openzeppelin/contracts/utils/Strings.sol";
 import { MerkleProof } from "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 
 /// @title An ERC721 token that can be claimed only by those holding a specific role on guild.xyz.
-contract GatedERC721 is RequestGuildRole, ERC721, IGatedERC721, Ownable {
+contract GatedERC721 is GuildOracle, ERC721, IGatedERC721, Ownable {
     using Strings for uint256;
 
     /// @inheritdoc IGatedERC721
@@ -48,7 +48,7 @@ contract GatedERC721 is RequestGuildRole, ERC721, IGatedERC721, Ownable {
         address oracleAddress,
         bytes32 jobId,
         uint256 oracleFee
-    ) RequestGuildRole(linkToken, oracleAddress, jobId, oracleFee, guildId) ERC721(name, symbol) {
+    ) GuildOracle(linkToken, oracleAddress, jobId, oracleFee, guildId) ERC721(name, symbol) {
         if (maxSupply_ == 0) revert MaxSupplyZero();
 
         cid = cid_;

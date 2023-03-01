@@ -1,4 +1,4 @@
-# RequestGuildRole
+# GuildOracle
 
 Guild.xyz role checker.
 
@@ -11,7 +11,7 @@ Inherit from this contract to have easy access to Guild's access check.
 ### requests
 
 ```solidity
-mapping(bytes32 => struct RequestGuildRole.RequestParams) requests
+mapping(bytes32 => struct GuildOracle.RequestParams) requests
 ```
 
 The request parameters mapped to the requestIds.
