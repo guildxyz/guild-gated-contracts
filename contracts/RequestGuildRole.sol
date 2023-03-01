@@ -61,13 +61,7 @@ abstract contract RequestGuildRole is ChainlinkClient {
     /// @param jobId_ The id of the job to run on the oracle.
     /// @param oracleFee_ The amount of tokens to forward to the oracle with every request.
     /// @param guildId_ The id of the guild the queried role(s) is/are in.
-    constructor(
-        address linkToken,
-        address oracleAddress,
-        bytes32 jobId_,
-        uint256 oracleFee_,
-        string memory guildId_
-    ) {
+    constructor(address linkToken, address oracleAddress, bytes32 jobId_, uint256 oracleFee_, string memory guildId_) {
         jobId = jobId_;
         oracleFee = oracleFee_;
         guildId = guildId_;
@@ -80,12 +74,7 @@ abstract contract RequestGuildRole is ChainlinkClient {
     /// @param roleId The roleId that has to be checked.
     /// @param callbackFn The identifier of the function the oracle should call when fulfulling the request.
     /// @param args Any additional function arguments in an abi encoded form.
-    function requestAccessCheck(
-        address userAddress,
-        uint96 roleId,
-        bytes4 callbackFn,
-        bytes memory args
-    ) internal {
+    function requestAccessCheck(address userAddress, uint96 roleId, bytes4 callbackFn, bytes memory args) internal {
         Chainlink.Request memory req = buildChainlinkRequest(jobId, address(this), callbackFn);
         req.add(
             "get",

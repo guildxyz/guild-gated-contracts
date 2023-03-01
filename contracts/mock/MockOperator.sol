@@ -94,11 +94,10 @@ contract MockOperator {
      * @param _data The data to return to the consuming contract.
      * @return Status if the external call was successful.
      */
-    function fulfillOracleRequest(bytes32 _requestId, bytes32 _data)
-        external
-        isValidRequest(_requestId)
-        returns (bool)
-    {
+    function fulfillOracleRequest(
+        bytes32 _requestId,
+        bytes32 _data
+    ) external isValidRequest(_requestId) returns (bool) {
         Request memory req = commitments[_requestId];
         delete commitments[_requestId];
         require(gasleft() >= MINIMUM_CONSUMER_GAS_LIMIT, "Must provide consumer enough gas");
@@ -118,12 +117,10 @@ contract MockOperator {
      * @param _data The data to return to the consuming contract.
      * @return Status if the external call was successful.
      */
-    function fulfillOracleRequest2(bytes32 _requestId, bytes calldata _data)
-        external
-        isValidRequest(_requestId)
-        validateMultiWordResponseId(_requestId, _data)
-        returns (bool)
-    {
+    function fulfillOracleRequest2(
+        bytes32 _requestId,
+        bytes calldata _data
+    ) external isValidRequest(_requestId) validateMultiWordResponseId(_requestId, _data) returns (bool) {
         Request memory req = commitments[_requestId];
         delete commitments[_requestId];
         require(gasleft() >= MINIMUM_CONSUMER_GAS_LIMIT, "Must provide consumer enough gas");
@@ -141,11 +138,10 @@ contract MockOperator {
      * @param _data The data to return to the consuming contract.
      * @return Status if the external call was successful.
      */
-    function tryFulfillOracleRequest(bytes32 _requestId, bytes32 _data)
-        external
-        isValidRequest(_requestId)
-        returns (bool)
-    {
+    function tryFulfillOracleRequest(
+        bytes32 _requestId,
+        bytes32 _data
+    ) external isValidRequest(_requestId) returns (bool) {
         Request memory req = commitments[_requestId];
         delete commitments[_requestId];
         require(gasleft() >= MINIMUM_CONSUMER_GAS_LIMIT, "Must provide consumer enough gas");
@@ -166,12 +162,10 @@ contract MockOperator {
      * @param _data The data to return to the consuming contract.
      * @return Status if the external call was successful.
      */
-    function tryFulfillOracleRequest2(bytes32 _requestId, bytes calldata _data)
-        external
-        isValidRequest(_requestId)
-        validateMultiWordResponseId(_requestId, _data)
-        returns (bool)
-    {
+    function tryFulfillOracleRequest2(
+        bytes32 _requestId,
+        bytes calldata _data
+    ) external isValidRequest(_requestId) validateMultiWordResponseId(_requestId, _data) returns (bool) {
         Request memory req = commitments[_requestId];
         delete commitments[_requestId];
         require(gasleft() >= MINIMUM_CONSUMER_GAS_LIMIT, "Must provide consumer enough gas");
@@ -194,12 +188,7 @@ contract MockOperator {
      * @param _payment The amount of payment given (specified in wei).
      * @param _expiration The time of the expiration for the request.
      */
-    function cancelOracleRequest(
-        bytes32 _requestId,
-        uint256 _payment,
-        bytes4,
-        uint256 _expiration
-    ) external {
+    function cancelOracleRequest(bytes32 _requestId, uint256 _payment, bytes4, uint256 _expiration) external {
         require(commitments[_requestId].callbackAddr != address(0), "Must use a unique ID");
         // solhint-disable-next-line not-rely-on-time
         require(_expiration <= block.timestamp, "Request is not expired");
@@ -219,11 +208,7 @@ contract MockOperator {
      * @param amount Amount of LINK sent (specified in wei).
      * @param data Payload of the transaction.
      */
-    function onTokenTransfer(
-        address sender,
-        uint256 amount,
-        bytes memory data
-    ) public validateFromLINK {
+    function onTokenTransfer(address sender, uint256 amount, bytes memory data) public validateFromLINK {
         assembly {
             // solhint-disable-next-line avoid-low-level-calls
             mstore(add(data, 36), sender) // ensure correct sender is passed

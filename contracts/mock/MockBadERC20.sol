@@ -18,11 +18,7 @@ contract MockBadERC20 is MockERC20 {
 
     /// @inheritdoc ERC20
     /// @dev Same as the regular transferFrom, but returns false.
-    function transferFrom(
-        address from,
-        address to,
-        uint256 amount
-    ) public override returns (bool) {
+    function transferFrom(address from, address to, uint256 amount) public override returns (bool) {
         super.transferFrom(from, to, amount);
         return false;
     }

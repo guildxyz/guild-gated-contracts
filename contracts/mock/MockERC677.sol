@@ -10,11 +10,7 @@ interface ERC677Receiver {
     /// @param sender The sender of the tokens.
     /// @param value The amount to be transferred.
     /// @param data The extra data to be passed to the receiving contract.
-    function onTokenTransfer(
-        address sender,
-        uint256 value,
-        bytes memory data
-    ) external;
+    function onTokenTransfer(address sender, uint256 value, bytes memory data) external;
 }
 
 /// @title A mintable and burnable ERC677 token.
@@ -32,11 +28,7 @@ contract MockERC677 is MockERC20 {
     /// @param to The address to transfer to.
     /// @param value The amount to be transferred.
     /// @param data The extra data to be passed to the receiving contract.
-    function transferAndCall(
-        address to,
-        uint256 value,
-        bytes memory data
-    ) public returns (bool success) {
+    function transferAndCall(address to, uint256 value, bytes memory data) public returns (bool success) {
         super.transfer(to, value);
         if (to.isContract()) ERC677Receiver(to).onTokenTransfer(msg.sender, value, data);
         return true;
