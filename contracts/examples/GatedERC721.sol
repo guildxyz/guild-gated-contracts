@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.19;
 
-import { RequestGuildRole } from "./RequestGuildRole.sol";
+import { RequestGuildRole } from "../RequestGuildRole.sol";
 import { IGatedERC721 } from "./interfaces/IGatedERC721.sol";
 import { IERC721Metadata } from "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
 import { ERC721 } from "@openzeppelin/contracts/token/ERC721/ERC721.sol";

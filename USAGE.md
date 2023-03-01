@@ -66,4 +66,4 @@ Be sure to fund your contract with LINK tokens. The oracle will not respond if i
 
 ### Examples
 
-Check out the already available Guild-gated [example contracts](contracts) in this project for further inspiration.
+Check out the already available Guild-gated [example contracts](contracts/examples/) in this project for further inspiration.
