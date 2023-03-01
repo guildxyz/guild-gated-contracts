@@ -67,3 +67,17 @@ Be sure to fund your contract with LINK tokens. The oracle will not respond if i
 ### Examples
 
 Check out the already available Guild-gated [example contracts](contracts/examples/) in this project for further inspiration.
+
+### Caveats
+
+Remember when I wrote that you should copy the GuildOracle contract to your project and leave it as it is? Well, there's one case when you DO have to edit it. Some oracle jobs specify a `times` parameter instead of `multiply`. If you're using such a job, you should change the following line:
+
+```solidity
+req.addInt("multiply", 1);
+```
+
+to this:
+
+```solidity
+req.addInt("times", 1);
+```
