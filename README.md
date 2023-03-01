@@ -35,13 +35,12 @@ Networks can be configured in _[hardhat.config.ts](hardhat.config.ts)_. We've pr
 - `hardhat` (for local testing, default)
 - `ethereum` (Ethereum Mainnet)
 - `goerli` (Görli Ethereum Testnet)
-- `rinkeby` (Rinkeby Ethereum Testnet)
-- `ropsten` (Ropsten Ethereum Testnet)
 - `bsc` (BNB Smart Chain)
 - `bsctest` (BNB Smart Chain Testnet)
 - `polygon` (Polygon Mainnet (formerly Matic))
 - `mumbai` (Matic Mumbai Testnet)
 - `gnosis` (Gnosis Chain (formerly xDai Chain))
+- `arbitrum` (Arbitrum One (Mainnet))
 
 ## Verification
 
