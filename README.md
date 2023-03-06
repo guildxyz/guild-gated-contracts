@@ -2,11 +2,19 @@
 
 Smart contracts with access control by [Guild](https://guild.xyz), via [Chainlink](https://chain.link) oracles.
 
+Currently 5 types of checks are supported:
+
+- joined a specific guild
+- is the owner of a specific guild
+- is an admin of a specific guild
+- satisfies requirements for a specific role
+- has a specific role
+
 The **[GuildOracle](contracts/GuildOracle.sol)** contract is suitable for creating any kind of Guild-gated contracts by building upon it. Find out how in [USAGE.md](USAGE.md).  
 The first examples leveraging this new feature:
 
-- [GatedDistributor](contracts/examples/GatedDistributor.sol): an ERC20 airdrop contract for a specific role in a specific guild.
-- [GatedERC721](contracts/examples/GatedERC721.sol): an ERC721 Non-Fungible Token that can be claimed only be those holding a specific role in a specific guild.
+- [GatedDistributor](contracts/examples/GatedDistributor.sol): an ERC20 airdrop contract for guild-related actions.
+- [GatedERC721](contracts/examples/GatedERC721.sol): an ERC721 Non-Fungible Token that can be claimed only after completing guild-related actions.
 
 A detailed documentation can be found in the _[docs](docs)_ folder.
 

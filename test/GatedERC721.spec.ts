@@ -108,7 +108,7 @@ describe("GatedERC721", function () {
     });
 
     it("should return the correct tokenURI", async () => {
-      const requestId = await getRequestId(await token.claim());
+      const requestId = await getRequestId(await token.claim(0));
       await chainlinkOperator.tryFulfillOracleRequest(requestId, oracleResponse.ACCESS);
       const regex = new RegExp(`ipfs://${tokenCid}/0.json`);
       expect(regex.test(await token.tokenURI(0))).to.eq(true);
@@ -117,9 +117,9 @@ describe("GatedERC721", function () {
 
   context("#claim", () => {
     it("fails if the address has already claimed", async () => {
-      const requestId = await getRequestId(await token.claim());
+      const requestId = await getRequestId(await token.claim(0));
       await chainlinkOperator.tryFulfillOracleRequest(requestId, oracleResponse.ACCESS);
-      await expect(token.claim()).to.be.revertedWithCustomError(token, "AlreadyClaimed");
+      await expect(token.claim(0)).to.be.revertedWithCustomError(token, "AlreadyClaimed");
     });
 
     it("fails if all the tokens are already minted", async () => {
@@ -138,27 +138,27 @@ describe("GatedERC721", function () {
       );
       await token.deployed();
 
-      const requestId = await getRequestId(await token.claim());
+      const requestId = await getRequestId(await token.claim(0));
       await chainlinkOperator.tryFulfillOracleRequest(requestId, oracleResponse.ACCESS);
 
       const maxSupply = await token.maxSupply();
       expect(await token.totalSupply()).to.eq(maxSupply);
-      await expect(token.connect(wallet1).claim())
+      await expect(token.connect(wallet1).claim(0))
         .to.be.revertedWithCustomError(token, "TokenIdOutOfBounds")
         .withArgs(1, maxSupply);
     });
 
     it("should successfully make claim requests", async () => {
-      const tx0 = await token.claim();
+      const tx0 = await token.claim(0);
       const res0 = await tx0.wait();
       expect(res0.status).to.equal(1);
-      const tx1 = await token.connect(wallet1).claim();
+      const tx1 = await token.connect(wallet1).claim(0);
       const res1 = await tx1.wait();
       expect(res1.status).to.equal(1);
     });
 
     it("emits ClaimRequested event", async () => {
-      await expect(token.claim()).to.emit(token, "ClaimRequested").withArgs(wallet0.address);
+      await expect(token.claim(0)).to.emit(token, "ClaimRequested").withArgs(wallet0.address, 0);
     });
   });
 
@@ -166,31 +166,31 @@ describe("GatedERC721", function () {
     let requestId: string;
 
     this.beforeEach("make a claim request", async () => {
-      requestId = await getRequestId(await token.claim());
+      requestId = await getRequestId(await token.claim(0));
     });
 
     it("fails if the address doesn't have the required role", async () => {
       await expect(chainlinkOperator.tryFulfillOracleRequest(requestId, oracleResponse.NO_ACCESS))
-        .to.be.revertedWithCustomError(token, "NoRole")
-        .withArgs(wallet0.address, rewardedRole);
+        .to.be.revertedWithCustomError(token, "NoAccess")
+        .withArgs(wallet0.address);
     });
 
     it("fails if the check failed or invalid data was returned by the oracle", async () => {
       await expect(chainlinkOperator.tryFulfillOracleRequest(requestId, oracleResponse.CHECK_FAILED))
-        .to.be.revertedWithCustomError(token, "CheckingRoleFailed")
-        .withArgs(wallet0.address, rewardedRole);
+        .to.be.revertedWithCustomError(token, "AccessCheckFailed")
+        .withArgs(wallet0.address);
       await expect(chainlinkOperator.tryFulfillOracleRequest(requestId, `${"0x".padEnd(65, "0")}3`))
-        .to.be.revertedWithCustomError(token, "CheckingRoleFailed")
-        .withArgs(wallet0.address, rewardedRole);
+        .to.be.revertedWithCustomError(token, "AccessCheckFailed")
+        .withArgs(wallet0.address);
       await expect(chainlinkOperator.tryFulfillOracleRequest(requestId, `${"0x".padEnd(65, "0")}9`))
-        .to.be.revertedWithCustomError(token, "CheckingRoleFailed")
-        .withArgs(wallet0.address, rewardedRole);
+        .to.be.revertedWithCustomError(token, "AccessCheckFailed")
+        .withArgs(wallet0.address);
     });
 
-    it("emits HasRole event", async () => {
+    it("emits HasAccess event", async () => {
       await expect(chainlinkOperator.tryFulfillOracleRequest(requestId, oracleResponse.ACCESS))
-        .to.be.emit(token, "HasRole")
-        .withArgs(wallet0.address, rewardedRole);
+        .to.be.emit(token, "HasAccess")
+        .withArgs(wallet0.address);
     });
 
     it("fails if the claim was already fulfilled", async () => {
@@ -222,7 +222,7 @@ describe("GatedERC721", function () {
     it("emits Claimed event", async () => {
       await expect(chainlinkOperator.tryFulfillOracleRequest(requestId, oracleResponse.ACCESS))
         .to.emit(token, "Claimed")
-        .withArgs(wallet0.address);
+        .withArgs(wallet0.address, 0);
     });
   });
 });

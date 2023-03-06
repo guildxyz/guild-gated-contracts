@@ -5,6 +5,15 @@ import { IERC721Metadata } from "@openzeppelin/contracts/token/ERC721/extensions
 
 /// @title An ERC721 token that can be claimed only by those holding a specific role on guild.xyz.
 interface IGatedERC721 is IERC721Metadata {
+    /// @notice Actions that can be checked via the oracle.
+    enum GuildAction {
+        HAS_ACCESS,
+        HAS_ROLE,
+        IS_ADMIN,
+        IS_OWNER,
+        JOINED_GUILD
+    }
+
     /// @notice Returns true if the address has already claimed their token.
     /// @param account The user's address.
     /// @return claimed Whether the address has claimed their token.
@@ -14,24 +23,31 @@ interface IGatedERC721 is IERC721Metadata {
     /// @return count The number of NFTs.
     function maxSupply() external view returns (uint256 count);
 
+    /// @notice Returns the id of the guild the rewarded role(s) is/are in.
+    /// @return guild The id of the guild.
+    function guildId() external view returns (uint256 guild);
+
     /// @notice Returns the id of the role in Guild.
     /// @return role The id of the role.
-    function rewardedRole() external view returns (uint96 role);
+    function rewardedRole() external view returns (uint256 role);
 
     /// @notice The total amount of tokens stored by the contract.
     /// @return count The number of NFTs.
     function totalSupply() external view returns (uint256 count);
 
     /// @notice Claims tokens to the given address.
-    function claim() external;
+    /// @param guildAction The action to check via the oracle.
+    function claim(GuildAction guildAction) external;
 
     /// @notice Event emitted whenever a claim succeeds (is fulfilled).
     /// @param receiver The address that received the tokens.
-    event Claimed(address receiver);
+    /// @param guildAction The action to check via the oracle.
+    event Claimed(address receiver, GuildAction guildAction);
 
     /// @notice Event emitted whenever a claim is requested.
     /// @param receiver The address that receives the tokens.
-    event ClaimRequested(address receiver);
+    /// @param guildAction The action that has been checked via the oracle.
+    event ClaimRequested(address receiver, GuildAction guildAction);
 
     /// @notice Error thrown when the token is already claimed.
     error AlreadyClaimed();

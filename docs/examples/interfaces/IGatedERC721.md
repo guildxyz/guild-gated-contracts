@@ -38,10 +38,23 @@ The maximum number of NFTs that can ever be minted.
 | Name | Type | Description |
 | :--- | :--- | :---------- |
 | `count` | uint256 | The number of NFTs. |
+### guildId
+
+```solidity
+function guildId() external returns (uint256 guild)
+```
+
+Returns the id of the guild the rewarded role(s) is/are in.
+
+#### Return Values
+
+| Name | Type | Description |
+| :--- | :--- | :---------- |
+| `guild` | uint256 | The id of the guild. |
 ### rewardedRole
 
 ```solidity
-function rewardedRole() external returns (uint96 role)
+function rewardedRole() external returns (uint256 role)
 ```
 
 Returns the id of the role in Guild.
@@ -50,7 +63,7 @@ Returns the id of the role in Guild.
 
 | Name | Type | Description |
 | :--- | :--- | :---------- |
-| `role` | uint96 | The id of the role. |
+| `role` | uint256 | The id of the role. |
 ### totalSupply
 
 ```solidity
@@ -67,10 +80,18 @@ The total amount of tokens stored by the contract.
 ### claim
 
 ```solidity
-function claim() external
+function claim(
+    enum IGatedERC721.GuildAction guildAction
+) external
 ```
 
 Claims tokens to the given address.
+
+#### Parameters
+
+| Name | Type | Description |
+| :--- | :--- | :---------- |
+| `guildAction` | enum IGatedERC721.GuildAction | The action to check via the oracle. |
 
 ## Events
 
@@ -78,7 +99,8 @@ Claims tokens to the given address.
 
 ```solidity
 event Claimed(
-    address receiver
+    address receiver,
+    enum IGatedERC721.GuildAction guildAction
 )
 ```
 
@@ -89,11 +111,13 @@ Event emitted whenever a claim succeeds (is fulfilled).
 | Name | Type | Description |
 | :--- | :--- | :---------- |
 | `receiver` | address | The address that received the tokens. |
+| `guildAction` | enum IGatedERC721.GuildAction | The action to check via the oracle. |
 ### ClaimRequested
 
 ```solidity
 event ClaimRequested(
-    address receiver
+    address receiver,
+    enum IGatedERC721.GuildAction guildAction
 )
 ```
 
@@ -104,6 +128,7 @@ Event emitted whenever a claim is requested.
 | Name | Type | Description |
 | :--- | :--- | :---------- |
 | `receiver` | address | The address that receives the tokens. |
+| `guildAction` | enum IGatedERC721.GuildAction | The action that has been checked via the oracle. |
 
 ## Custom errors
 
@@ -151,4 +176,18 @@ Error thrown when the tokenId is higher than the maximum supply.
 | ---- | ---- | ----------- |
 | tokenId | uint256 | The id that was attempted to be used. |
 | maxSupply | uint256 | The maximum supply of the token. |
+
+## Custom types
+
+### GuildAction
+
+```solidity
+enum GuildAction {
+  HAS_ACCESS,
+  HAS_ROLE,
+  IS_ADMIN,
+  IS_OWNER,
+  JOINED_GUILD
+}
+```
 

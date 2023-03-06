@@ -4,10 +4,18 @@ An ERC721 token that can be claimed only by those holding a specific role on gui
 
 ## Variables
 
+### guildId
+
+```solidity
+uint256 guildId
+```
+
+Returns the id of the guild the rewarded role(s) is/are in.
+
 ### rewardedRole
 
 ```solidity
-uint96 rewardedRole
+uint256 rewardedRole
 ```
 
 Returns the id of the role in Guild.
@@ -54,8 +62,8 @@ constructor(
     string symbol,
     string cid_,
     uint256 maxSupply_,
-    string guildId,
-    uint96 rewardedRole_,
+    uint256 guildId_,
+    uint256 rewardedRole_,
     address linkToken,
     address oracleAddress,
     bytes32 jobId,
@@ -73,8 +81,8 @@ Sets metadata and the oracle details.
 | `symbol` | string | The symbol of the token. |
 | `cid_` | string | The ipfs hash, under which the off-chain metadata is uploaded. |
 | `maxSupply_` | uint256 | The maximum number of NFTs that can ever be minted. |
-| `guildId` | string | The id of the guild the rewarded role is in. |
-| `rewardedRole_` | uint96 | The id of the rewarded role on Guild. |
+| `guildId_` | uint256 | The id of the guild the rewarded role is in. |
+| `rewardedRole_` | uint256 | The id of the rewarded role on Guild. |
 | `linkToken` | address | The address of the Chainlink token. |
 | `oracleAddress` | address | The address of the oracle processing the requests. |
 | `jobId` | bytes32 | The id of the job to run on the oracle. |
@@ -83,10 +91,18 @@ Sets metadata and the oracle details.
 ### claim
 
 ```solidity
-function claim() external
+function claim(
+    enum IGatedERC721.GuildAction guildAction
+) external
 ```
 
 Claims tokens to the given address.
+
+#### Parameters
+
+| Name | Type | Description |
+| :--- | :--- | :---------- |
+| `guildAction` | enum IGatedERC721.GuildAction | The action to check via the oracle. |
 
 ### fulfillClaim
 

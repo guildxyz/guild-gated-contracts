@@ -163,36 +163,36 @@ describe("GatedDistributor", function () {
   context("#claim", () => {
     it("fails if distribution ended", async () => {
       await increaseTime(distributionDuration + 1);
-      await expect(distributor.claim())
+      await expect(distributor.claim(0))
         .to.be.revertedWithCustomError(distributor, "DistributionEnded")
         .withArgs(await blockTimestamp(), await distributor.distributionEnd());
     });
 
     it("fails if the address has already claimed", async () => {
       await setBalance(rewardToken, distributor.address, rewardAmount);
-      const requestId = await getRequestId(await distributor.claim());
+      const requestId = await getRequestId(await distributor.claim(0));
       await chainlinkOperator.tryFulfillOracleRequest(requestId, oracleResponse.ACCESS);
-      await expect(distributor.claim()).to.be.revertedWithCustomError(distributor, "AlreadyClaimed");
+      await expect(distributor.claim(0)).to.be.revertedWithCustomError(distributor, "AlreadyClaimed");
     });
 
     it("fails if distributor has not enough tokens", async () => {
       await setBalance(rewardToken, distributor.address, BigNumber.from(0));
-      await expect(distributor.claim()).to.be.revertedWithCustomError(distributor, "OutOfTokens");
+      await expect(distributor.claim(0)).to.be.revertedWithCustomError(distributor, "OutOfTokens");
     });
 
     it("should successfully make claim requests", async () => {
       await setBalance(rewardToken, distributor.address, rewardAmount.mul(2));
-      const tx0 = await distributor.claim();
+      const tx0 = await distributor.claim(0);
       const res0 = await tx0.wait();
       expect(res0.status).to.equal(1);
-      const tx1 = await distributor.connect(wallet1).claim();
+      const tx1 = await distributor.connect(wallet1).claim(0);
       const res1 = await tx1.wait();
       expect(res1.status).to.equal(1);
     });
 
     it("emits ClaimRequested event", async () => {
       await setBalance(rewardToken, distributor.address, rewardAmount);
-      await expect(distributor.claim()).to.emit(distributor, "ClaimRequested").withArgs(wallet0.address);
+      await expect(distributor.claim(0)).to.emit(distributor, "ClaimRequested").withArgs(wallet0.address, 0);
     });
   });
 
@@ -201,31 +201,31 @@ describe("GatedDistributor", function () {
 
     this.beforeEach("make a claim request", async () => {
       await setBalance(rewardToken, distributor.address, rewardAmount.mul(2));
-      requestId = await getRequestId(await distributor.claim());
+      requestId = await getRequestId(await distributor.claim(0));
     });
 
     it("fails if the address doesn't have the required role", async () => {
       await expect(chainlinkOperator.tryFulfillOracleRequest(requestId, oracleResponse.NO_ACCESS))
-        .to.be.revertedWithCustomError(distributor, "NoRole")
-        .withArgs(wallet0.address, rewardedRole);
+        .to.be.revertedWithCustomError(distributor, "NoAccess")
+        .withArgs(wallet0.address);
     });
 
     it("fails if the check failed or invalid data was returned by the oracle", async () => {
       await expect(chainlinkOperator.tryFulfillOracleRequest(requestId, oracleResponse.CHECK_FAILED))
-        .to.be.revertedWithCustomError(distributor, "CheckingRoleFailed")
-        .withArgs(wallet0.address, rewardedRole);
+        .to.be.revertedWithCustomError(distributor, "AccessCheckFailed")
+        .withArgs(wallet0.address);
       await expect(chainlinkOperator.tryFulfillOracleRequest(requestId, `${"0x".padEnd(65, "0")}3`))
-        .to.be.revertedWithCustomError(distributor, "CheckingRoleFailed")
-        .withArgs(wallet0.address, rewardedRole);
+        .to.be.revertedWithCustomError(distributor, "AccessCheckFailed")
+        .withArgs(wallet0.address);
       await expect(chainlinkOperator.tryFulfillOracleRequest(requestId, `${"0x".padEnd(65, "0")}9`))
-        .to.be.revertedWithCustomError(distributor, "CheckingRoleFailed")
-        .withArgs(wallet0.address, rewardedRole);
+        .to.be.revertedWithCustomError(distributor, "AccessCheckFailed")
+        .withArgs(wallet0.address);
     });
 
-    it("emits HasRole event", async () => {
+    it("emits HasAccess event", async () => {
       await expect(chainlinkOperator.tryFulfillOracleRequest(requestId, oracleResponse.ACCESS))
-        .to.be.emit(distributor, "HasRole")
-        .withArgs(wallet0.address, rewardedRole);
+        .to.be.emit(distributor, "HasAccess")
+        .withArgs(wallet0.address);
     });
 
     it("fails if the claim was already fulfilled", async () => {
@@ -262,7 +262,7 @@ describe("GatedDistributor", function () {
       );
       await distributor.deployed();
       await setBalance(badToken, distributor.address, rewardAmount);
-      requestId = await getRequestId(await distributor.claim());
+      requestId = await getRequestId(await distributor.claim(0));
 
       await expect(chainlinkOperator.tryFulfillOracleRequest(requestId, oracleResponse.ACCESS))
         .to.be.revertedWithCustomError(distributor, "TransferFailed")
@@ -278,7 +278,7 @@ describe("GatedDistributor", function () {
     it("emits Claimed event", async () => {
       await expect(chainlinkOperator.tryFulfillOracleRequest(requestId, oracleResponse.ACCESS))
         .to.emit(distributor, "Claimed")
-        .withArgs(wallet0.address);
+        .withArgs(wallet0.address, 0);
     });
   });
 
@@ -299,11 +299,11 @@ describe("GatedDistributor", function () {
 
     it("allows claiming with a new distribution period", async () => {
       await increaseTime(distributionDuration + 120);
-      await expect(distributor.claim())
+      await expect(distributor.claim(0))
         .to.be.revertedWithCustomError(distributor, "DistributionEnded")
         .withArgs(await blockTimestamp(), await distributor.distributionEnd());
       await distributor.prolongDistributionPeriod(990);
-      const tx = await distributor.claim();
+      const tx = await distributor.claim(0);
       const res = await tx.wait();
       expect(res.status).to.eq(1);
     });

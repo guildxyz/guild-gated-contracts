@@ -1,8 +1,8 @@
 # GuildOracle
 
-Guild.xyz role checker.
+Guild Oracle.
 
-Base contract to check an address's roles on Guild.xyz via a Chainlink oracle.
+Base contract to check an address's accesses, roles, admin/owner status on Guild.xyz via a Chainlink oracle.
 
 Inherit from this contract to have easy access to Guild's access check.
 
@@ -32,14 +32,6 @@ bytes32 jobId
 
 The id of the job to run on the oracle.
 
-### guildId
-
-```solidity
-string guildId
-```
-
-The id of the guild the rewarded role(s) is/are in.
-
 ## Functions
 
 ### constructor
@@ -49,8 +41,7 @@ constructor(
     address linkToken,
     address oracleAddress,
     bytes32 jobId_,
-    uint256 oracleFee_,
-    string guildId_
+    uint256 oracleFee_
 ) 
 ```
 
@@ -64,36 +55,127 @@ Sets the oracle's details and the guild where the roles are in.
 | `oracleAddress` | address | The address of the oracle processing the requests. |
 | `jobId_` | bytes32 | The id of the job to run on the oracle. |
 | `oracleFee_` | uint256 | The amount of tokens to forward to the oracle with every request. |
-| `guildId_` | string | The id of the guild the queried role(s) is/are in. |
 
-### requestAccessCheck
+### requestGuildRoleAccessCheck
 
 ```solidity
-function requestAccessCheck(
-    address userAddress,
-    uint96 roleId,
+function requestGuildRoleAccessCheck(
+    address addressToCheck,
+    uint256 roleId,
+    uint256 guildId,
     bytes4 callbackFn,
     bytes args
 ) internal
 ```
 
-Requests the needed data from the oracle.
+Sends a request to the oracle querying if the user has access to a certain role on Guild.
+
+The user may not actually hold the role.
 
 #### Parameters
 
 | Name | Type | Description |
 | :--- | :--- | :---------- |
-| `userAddress` | address | The address of the user. |
-| `roleId` | uint96 | The roleId that has to be checked. |
-| `callbackFn` | bytes4 | The identifier of the function the oracle should call when fulfulling the request. |
+| `addressToCheck` | address | The address of the user. |
+| `roleId` | uint256 | The roleId that has to be checked. |
+| `guildId` | uint256 | The id of the guild the rewarded role is in. |
+| `callbackFn` | bytes4 | The identifier of the function the oracle should call when fulfilling the request. |
+| `args` | bytes | Any additional function arguments in an abi encoded form. |
+
+### requestGuildRoleCheck
+
+```solidity
+function requestGuildRoleCheck(
+    address addressToCheck,
+    uint256 roleId,
+    bytes4 callbackFn,
+    bytes args
+) internal
+```
+
+Sends a request to the oracle querying if the user has obtained a certain role on Guild.
+
+#### Parameters
+
+| Name | Type | Description |
+| :--- | :--- | :---------- |
+| `addressToCheck` | address | The address of the user. |
+| `roleId` | uint256 | The id of the role that needs to be checked. |
+| `callbackFn` | bytes4 | The identifier of the function the oracle should call when fulfilling the request. |
+| `args` | bytes | Any additional function arguments in an abi encoded form. |
+
+### requestGuildJoinCheck
+
+```solidity
+function requestGuildJoinCheck(
+    address addressToCheck,
+    uint256 guildId,
+    bytes4 callbackFn,
+    bytes args
+) internal
+```
+
+Sends a request to the oracle querying if the user has joined a certain guild.
+
+#### Parameters
+
+| Name | Type | Description |
+| :--- | :--- | :---------- |
+| `addressToCheck` | address | The address of the user. |
+| `guildId` | uint256 | The id of the guild that needs to be checked. |
+| `callbackFn` | bytes4 | The identifier of the function the oracle should call when fulfilling the request. |
+| `args` | bytes | Any additional function arguments in an abi encoded form. |
+
+### requestGuildAdminCheck
+
+```solidity
+function requestGuildAdminCheck(
+    address addressToCheck,
+    uint256 guildId,
+    bytes4 callbackFn,
+    bytes args
+) internal
+```
+
+Sends a request to the oracle querying if the user is an admin of a certain guild.
+
+#### Parameters
+
+| Name | Type | Description |
+| :--- | :--- | :---------- |
+| `addressToCheck` | address | The address of the user. |
+| `guildId` | uint256 | The id of the guild that needs to be checked. |
+| `callbackFn` | bytes4 | The identifier of the function the oracle should call when fulfilling the request. |
+| `args` | bytes | Any additional function arguments in an abi encoded form. |
+
+### requestGuildOwnerCheck
+
+```solidity
+function requestGuildOwnerCheck(
+    address addressToCheck,
+    uint256 guildId,
+    bytes4 callbackFn,
+    bytes args
+) internal
+```
+
+Sends a request to the oracle querying if the user is the owner of a certain guild.
+
+#### Parameters
+
+| Name | Type | Description |
+| :--- | :--- | :---------- |
+| `addressToCheck` | address | The address of the user. |
+| `guildId` | uint256 | The id of the guild that needs to be checked. |
+| `callbackFn` | bytes4 | The identifier of the function the oracle should call when fulfilling the request. |
 | `args` | bytes | Any additional function arguments in an abi encoded form. |
 
 ## Modifiers
 
-### checkRole
+### checkResponse
 
 ```solidity
-modifier checkRole(bytes32 requestId, uint256 access)
+modifier checkResponse(bytes32 requestId, uint256 access)
 ```
 
 Processes the data returned by the Chainlink node.
@@ -107,12 +189,11 @@ Processes the data returned by the Chainlink node.
 
 ## Events
 
-### HasRole
+### HasAccess
 
 ```solidity
-event HasRole(
-    address userAddress,
-    uint96 roleId
+event HasAccess(
+    address userAddress
 )
 ```
 
@@ -123,14 +204,13 @@ Event emitted when an address is successfully verified to have a role.
 | Name | Type | Description |
 | :--- | :--- | :---------- |
 | `userAddress` | address | The address of the queried user. |
-| `roleId` | uint96 | The id of the queried role. |
 
 ## Custom errors
 
-### NoRole
+### NoAccess
 
 ```solidity
-error NoRole(address userAddress, uint96 roleId)
+error NoAccess(address userAddress)
 ```
 
 Error thrown when an address doesn't have the needed role.
@@ -140,12 +220,11 @@ Error thrown when an address doesn't have the needed role.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | userAddress | address | The address of the queried user. |
-| roleId | uint96 | The id of the queried role. |
 
-### CheckingRoleFailed
+### AccessCheckFailed
 
 ```solidity
-error CheckingRoleFailed(address userAddress, uint96 roleId)
+error AccessCheckFailed(address userAddress)
 ```
 
 Error thrown when a role check failed due to an unavailable server or invalid return data.
@@ -155,7 +234,6 @@ Error thrown when a role check failed due to an unavailable server or invalid re
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | userAddress | address | The address of the queried user. |
-| roleId | uint96 | The id of the queried role. |
 
 ## Custom types
 
@@ -173,7 +251,6 @@ enum Access {
 ```solidity
 struct RequestParams {
   address userAddress;
-  uint96 roleId;
   bytes args;
 }
 ```

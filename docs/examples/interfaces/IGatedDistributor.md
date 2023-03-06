@@ -4,10 +4,23 @@ Provides ERC20 token distribution based on a Merkle tree.
 
 ## Functions
 
+### guildId
+
+```solidity
+function guildId() external returns (uint256 guild)
+```
+
+Returns the id of the guild the rewarded role(s) is/are in.
+
+#### Return Values
+
+| Name | Type | Description |
+| :--- | :--- | :---------- |
+| `guild` | uint256 | The id of the guild. |
 ### rewardedRole
 
 ```solidity
-function rewardedRole() external returns (uint96 role)
+function rewardedRole() external returns (uint256 role)
 ```
 
 Returns the id of the role in Guild.
@@ -16,7 +29,7 @@ Returns the id of the role in Guild.
 
 | Name | Type | Description |
 | :--- | :--- | :---------- |
-| `role` | uint96 | The id of the role. |
+| `role` | uint256 | The id of the role. |
 ### rewardToken
 
 ```solidity
@@ -80,10 +93,18 @@ Returns true if the address has already claimed their tokens.
 ### claim
 
 ```solidity
-function claim() external
+function claim(
+    enum IGatedDistributor.GuildAction guildAction
+) external
 ```
 
 Claims the given amount of the token to the given address. Reverts if the inputs are invalid.
+
+#### Parameters
+
+| Name | Type | Description |
+| :--- | :--- | :---------- |
+| `guildAction` | enum IGatedDistributor.GuildAction | The action to check via the oracle. |
 
 ### prolongDistributionPeriod
 
@@ -123,7 +144,8 @@ Sends the tokens remaining after the distribution has ended to `recipient`. Call
 
 ```solidity
 event Claimed(
-    address receiver
+    address receiver,
+    enum IGatedDistributor.GuildAction guildAction
 )
 ```
 
@@ -134,11 +156,13 @@ Event emitted whenever a claim succeeds (is fulfilled).
 | Name | Type | Description |
 | :--- | :--- | :---------- |
 | `receiver` | address | The address that received the tokens. |
+| `guildAction` | enum IGatedDistributor.GuildAction | The action to check via the oracle. |
 ### ClaimRequested
 
 ```solidity
 event ClaimRequested(
-    address receiver
+    address receiver,
+    enum IGatedDistributor.GuildAction guildAction
 )
 ```
 
@@ -149,6 +173,7 @@ Event emitted whenever a claim is requested.
 | Name | Type | Description |
 | :--- | :--- | :---------- |
 | `receiver` | address | The address that receives the tokens. |
+| `guildAction` | enum IGatedDistributor.GuildAction | The action that has been checked via the oracle. |
 ### DistributionProlonged
 
 ```solidity
@@ -269,4 +294,18 @@ Error thrown when a transfer failed.
 | token | address | The address of token attempted to be transferred. |
 | from | address | The sender of the token. |
 | to | address | The recipient of the token. |
+
+## Custom types
+
+### GuildAction
+
+```solidity
+enum GuildAction {
+  HAS_ACCESS,
+  HAS_ROLE,
+  IS_ADMIN,
+  IS_OWNER,
+  JOINED_GUILD
+}
+```
 

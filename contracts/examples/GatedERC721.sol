@@ -13,7 +13,8 @@ import { MerkleProof } from "@openzeppelin/contracts/utils/cryptography/MerklePr
 contract GatedERC721 is GuildOracle, ERC721, IGatedERC721, Ownable {
     using Strings for uint256;
 
-    uint96 public immutable rewardedRole;
+    uint256 public immutable guildId;
+    uint256 public immutable rewardedRole;
 
     uint256 public immutable maxSupply;
     uint256 public totalSupply;
@@ -27,7 +28,7 @@ contract GatedERC721 is GuildOracle, ERC721, IGatedERC721, Ownable {
     /// @param symbol The symbol of the token.
     /// @param cid_ The ipfs hash, under which the off-chain metadata is uploaded.
     /// @param maxSupply_ The maximum number of NFTs that can ever be minted.
-    /// @param guildId The id of the guild the rewarded role is in.
+    /// @param guildId_ The id of the guild the rewarded role is in.
     /// @param rewardedRole_ The id of the rewarded role on Guild.
     /// @param linkToken The address of the Chainlink token.
     /// @param oracleAddress The address of the oracle processing the requests.
@@ -38,40 +39,79 @@ contract GatedERC721 is GuildOracle, ERC721, IGatedERC721, Ownable {
         string memory symbol,
         string memory cid_,
         uint256 maxSupply_,
-        string memory guildId,
-        uint96 rewardedRole_,
+        uint256 guildId_,
+        uint256 rewardedRole_,
         address linkToken,
         address oracleAddress,
         bytes32 jobId,
         uint256 oracleFee
-    ) GuildOracle(linkToken, oracleAddress, jobId, oracleFee, guildId) ERC721(name, symbol) {
+    ) GuildOracle(linkToken, oracleAddress, jobId, oracleFee) ERC721(name, symbol) {
         if (maxSupply_ == 0) revert MaxSupplyZero();
 
         cid = cid_;
         maxSupply = maxSupply_;
+        guildId = guildId_;
         rewardedRole = rewardedRole_;
     }
 
-    function claim() external override {
+    function claim(GuildAction guildAction) external override {
         if (hasClaimed[msg.sender]) revert AlreadyClaimed();
 
         uint256 tokenId = totalSupply;
         if (tokenId >= maxSupply) revert TokenIdOutOfBounds(tokenId, maxSupply);
 
-        requestAccessCheck(msg.sender, rewardedRole, this.fulfillClaim.selector, abi.encode(msg.sender, tokenId));
+        if (guildAction == GuildAction.HAS_ACCESS)
+            requestGuildRoleAccessCheck(
+                msg.sender,
+                rewardedRole,
+                guildId,
+                this.fulfillClaim.selector,
+                abi.encode(msg.sender, tokenId, GuildAction.HAS_ACCESS)
+            );
+        else if (guildAction == GuildAction.HAS_ROLE)
+            requestGuildRoleCheck(
+                msg.sender,
+                rewardedRole,
+                this.fulfillClaim.selector,
+                abi.encode(msg.sender, tokenId, GuildAction.HAS_ROLE)
+            );
+        else if (guildAction == GuildAction.IS_ADMIN)
+            requestGuildAdminCheck(
+                msg.sender,
+                guildId,
+                this.fulfillClaim.selector,
+                abi.encode(msg.sender, tokenId, GuildAction.IS_ADMIN)
+            );
+        else if (guildAction == GuildAction.IS_OWNER)
+            requestGuildOwnerCheck(
+                msg.sender,
+                guildId,
+                this.fulfillClaim.selector,
+                abi.encode(msg.sender, tokenId, GuildAction.IS_OWNER)
+            );
+        else if (guildAction == GuildAction.JOINED_GUILD)
+            requestGuildJoinCheck(
+                msg.sender,
+                guildId,
+                this.fulfillClaim.selector,
+                abi.encode(msg.sender, tokenId, GuildAction.JOINED_GUILD)
+            );
 
-        emit ClaimRequested(msg.sender);
+        emit ClaimRequested(msg.sender, guildAction);
     }
 
     /// @dev The actual claim function called by the oracle if the requirements are fulfilled.
-    function fulfillClaim(bytes32 requestId, uint256 access) public checkRole(requestId, access) {
-        (address receiver, uint256 tokenId) = abi.decode(requests[requestId].args, (address, uint256));
+    function fulfillClaim(bytes32 requestId, uint256 access) public checkResponse(requestId, access) {
+        (address receiver, uint256 tokenId, GuildAction guildAction) = abi.decode(
+            requests[requestId].args,
+            (address, uint256, GuildAction)
+        );
 
         // Mark it claimed and mint the token.
         hasClaimed[receiver] = true;
         _safeMint(receiver, tokenId);
 
-        emit Claimed(receiver);
+        emit Claimed(receiver, guildAction);
     }
 
     /// An optimized version of {_safeMint} using custom errors.

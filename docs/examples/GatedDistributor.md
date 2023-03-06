@@ -4,10 +4,18 @@ A Guild-gated ERC20 distributor.
 
 ## Variables
 
+### guildId
+
+```solidity
+uint256 guildId
+```
+
+Returns the id of the guild the rewarded role(s) is/are in.
+
 ### rewardedRole
 
 ```solidity
-uint96 rewardedRole
+uint256 rewardedRole
 ```
 
 Returns the id of the role in Guild.
@@ -53,8 +61,8 @@ constructor(
     address token_,
     uint128 amount_,
     uint256 distributionDuration,
-    string guildId,
-    uint96 rewardedRole_,
+    uint256 guildId_,
+    uint256 rewardedRole_,
     address linkToken,
     address oracleAddress,
     bytes32 jobId,
@@ -71,8 +79,8 @@ Sets the config and the oracle details.
 | `token_` | address | The address of the ERC20 token to distribute. |
 | `amount_` | uint128 | The amount of tokens an eligible address will be able to claim. |
 | `distributionDuration` | uint256 | The time interval while the distribution lasts in seconds. |
-| `guildId` | string | The id of the guild the rewarded role is in. |
-| `rewardedRole_` | uint96 | The id of the rewarded role on Guild. |
+| `guildId_` | uint256 | The id of the guild the rewarded role is in. |
+| `rewardedRole_` | uint256 | The id of the rewarded role on Guild. |
 | `linkToken` | address | The address of the Chainlink token. |
 | `oracleAddress` | address | The address of the oracle processing the requests. |
 | `jobId` | bytes32 | The id of the job to run on the oracle. |
@@ -81,10 +89,18 @@ Sets the config and the oracle details.
 ### claim
 
 ```solidity
-function claim() external
+function claim(
+    enum IGatedDistributor.GuildAction guildAction
+) external
 ```
 
 Claims the given amount of the token to the given address. Reverts if the inputs are invalid.
+
+#### Parameters
+
+| Name | Type | Description |
+| :--- | :--- | :---------- |
+| `guildAction` | enum IGatedDistributor.GuildAction | The action to check via the oracle. |
 
 ### fulfillClaim
 

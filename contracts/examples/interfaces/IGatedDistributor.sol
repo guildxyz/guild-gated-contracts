@@ -3,9 +3,22 @@ pragma solidity ^0.8.0;
 
 /// @title Provides ERC20 token distribution based on a Merkle tree.
 interface IGatedDistributor {
+    /// @notice Actions that can be checked via the oracle.
+    enum GuildAction {
+        HAS_ACCESS,
+        HAS_ROLE,
+        IS_ADMIN,
+        IS_OWNER,
+        JOINED_GUILD
+    }
+
+    /// @notice Returns the id of the guild the rewarded role(s) is/are in.
+    /// @return guild The id of the guild.
+    function guildId() external view returns (uint256 guild);
+
     /// @notice Returns the id of the role in Guild.
     /// @return role The id of the role.
-    function rewardedRole() external view returns (uint96 role);
+    function rewardedRole() external view returns (uint256 role);
 
     /// @notice Returns the address of the token distributed by this contract.
     /// @return tokenAddress The address of the token.
@@ -25,7 +38,8 @@ interface IGatedDistributor {
     function hasClaimed(address account) external view returns (bool claimed);
 
     /// @notice Claims the given amount of the token to the given address. Reverts if the inputs are invalid.
-    function claim() external;
+    /// @param guildAction The action to check via the oracle.
+    function claim(GuildAction guildAction) external;
 
     /// @notice Prolongs the distribution period of the tokens. Callable only by the owner.
     /// @param additionalSeconds The seconds to add to the current distributionEnd.
@@ -37,11 +51,13 @@ interface IGatedDistributor {
 
     /// @notice Event emitted whenever a claim succeeds (is fulfilled).
     /// @param receiver The address that received the tokens.
-    event Claimed(address receiver);
+    /// @param guildAction The action to check via the oracle.
+    event Claimed(address receiver, GuildAction guildAction);
 
     /// @notice Event emitted whenever a claim is requested.
     /// @param receiver The address that receives the tokens.
-    event ClaimRequested(address receiver);
+    /// @param guildAction The action that has been checked via the oracle.
+    event ClaimRequested(address receiver, GuildAction guildAction);
 
     /// @notice Event emitted whenever a call to {prolongDistributionPeriod} succeeds.
     /// @param newDistributionEnd The time when the distribution ends.
