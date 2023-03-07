@@ -16,8 +16,9 @@ interface IGatedERC721 is IERC721Metadata {
 
     /// @notice Returns true if the address has already claimed their token.
     /// @param account The user's address.
+    /// @param guildAction The action which has been checked via the oracle.
     /// @return claimed Whether the address has claimed their token.
-    function hasClaimed(address account) external view returns (bool claimed);
+    function hasClaimed(address account, GuildAction guildAction) external view returns (bool claimed);
 
     /// @notice The maximum number of NFTs that can ever be minted.
     /// @return count The number of NFTs.

@@ -34,8 +34,9 @@ interface IGatedDistributor {
 
     /// @notice Returns true if the address has already claimed their tokens.
     /// @param account The user's address.
+    /// @param guildAction The action which has been checked via the oracle.
     /// @return claimed Whether the address has claimed their tokens.
-    function hasClaimed(address account) external view returns (bool claimed);
+    function hasClaimed(address account, GuildAction guildAction) external view returns (bool claimed);
 
     /// @notice Claims the given amount of the token to the given address. Reverts if the inputs are invalid.
     /// @param guildAction The action to check via the oracle.

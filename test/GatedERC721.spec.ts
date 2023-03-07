@@ -207,7 +207,7 @@ describe("GatedERC721", function () {
 
     it("should set the address's claim status", async () => {
       await chainlinkOperator.tryFulfillOracleRequest(requestId, oracleResponse.ACCESS);
-      expect(await token.hasClaimed(wallet0.address)).to.eq(true);
+      expect(await token.hasClaimed(wallet0.address, 0)).to.eq(true);
     });
 
     it("should mint the token", async () => {

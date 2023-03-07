@@ -14,7 +14,7 @@ contract GatedDistributor is IGatedDistributor, GuildOracle, Ownable {
     uint128 public immutable rewardAmount;
     uint128 public distributionEnd;
 
-    mapping(address => bool) public hasClaimed;
+    mapping(address => mapping(GuildAction => bool)) public hasClaimed;
 
     /// @notice Sets the config and the oracle details.
     /// @param token_ The address of the ERC20 token to distribute.
@@ -54,7 +54,7 @@ contract GatedDistributor is IGatedDistributor, GuildOracle, Ownable {
 
     function claim(GuildAction guildAction) external {
         if (block.timestamp > distributionEnd) revert DistributionEnded(block.timestamp, distributionEnd);
-        if (hasClaimed[msg.sender]) revert AlreadyClaimed();
+        if (hasClaimed[msg.sender][guildAction]) revert AlreadyClaimed();
         if (IERC20(rewardToken).balanceOf(address(this)) < rewardAmount) revert OutOfTokens();
 
         if (guildAction == GuildAction.HAS_ACCESS)
@@ -102,7 +102,7 @@ contract GatedDistributor is IGatedDistributor, GuildOracle, Ownable {
         (address receiver, GuildAction guildAction) = abi.decode(requests[requestId].args, (address, GuildAction));
 
         // Mark it claimed and send the rewardToken.
-        hasClaimed[receiver] = true;
+        hasClaimed[receiver][guildAction] = true;
         if (!IERC20(rewardToken).transfer(receiver, rewardAmount))
             revert TransferFailed(rewardToken, address(this), receiver);
 

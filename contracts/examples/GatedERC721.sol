@@ -21,7 +21,7 @@ contract GatedERC721 is GuildOracle, ERC721, IGatedERC721, Ownable {
     /// @notice The ipfs hash, under which the off-chain metadata is uploaded.
     string internal cid;
 
-    mapping(address => bool) public hasClaimed;
+    mapping(address => mapping(GuildAction => bool)) public hasClaimed;
 
     /// @notice Sets metadata and the oracle details.
     /// @param name The name of the token.
@@ -55,7 +55,7 @@ contract GatedERC721 is GuildOracle, ERC721, IGatedERC721, Ownable {
     }
 
     function claim(GuildAction guildAction) external override {
-        if (hasClaimed[msg.sender]) revert AlreadyClaimed();
+        if (hasClaimed[msg.sender][guildAction]) revert AlreadyClaimed();
 
         uint256 tokenId = totalSupply;
         if (tokenId >= maxSupply) revert TokenIdOutOfBounds(tokenId, maxSupply);
@@ -108,7 +108,7 @@ contract GatedERC721 is GuildOracle, ERC721, IGatedERC721, Ownable {
         );
 
         // Mark it claimed and mint the token.
-        hasClaimed[receiver] = true;
+        hasClaimed[receiver][guildAction] = true;
         _safeMint(receiver, tokenId);
 
         emit Claimed(receiver, guildAction);
