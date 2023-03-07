@@ -47,7 +47,7 @@ The ipfs hash, under which the off-chain metadata is uploaded.
 ### hasClaimed
 
 ```solidity
-mapping(address => bool) hasClaimed
+mapping(address => mapping(enum IGatedERC721.GuildAction => bool)) hasClaimed
 ```
 
 Returns true if the address has already claimed their token.

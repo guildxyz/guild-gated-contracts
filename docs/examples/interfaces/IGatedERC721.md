@@ -8,7 +8,8 @@ An ERC721 token that can be claimed only by those holding a specific role on gui
 
 ```solidity
 function hasClaimed(
-    address account
+    address account,
+    enum IGatedERC721.GuildAction guildAction
 ) external returns (bool claimed)
 ```
 
@@ -19,6 +20,7 @@ Returns true if the address has already claimed their token.
 | Name | Type | Description |
 | :--- | :--- | :---------- |
 | `account` | address | The user's address. |
+| `guildAction` | enum IGatedERC721.GuildAction | The action which has been checked via the oracle. |
 
 #### Return Values
 

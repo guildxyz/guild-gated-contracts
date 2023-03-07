@@ -73,7 +73,8 @@ Returns the unix timestamp that marks the end of the token distribution.
 
 ```solidity
 function hasClaimed(
-    address account
+    address account,
+    enum IGatedDistributor.GuildAction guildAction
 ) external returns (bool claimed)
 ```
 
@@ -84,6 +85,7 @@ Returns true if the address has already claimed their tokens.
 | Name | Type | Description |
 | :--- | :--- | :---------- |
 | `account` | address | The user's address. |
+| `guildAction` | enum IGatedDistributor.GuildAction | The action which has been checked via the oracle. |
 
 #### Return Values
 

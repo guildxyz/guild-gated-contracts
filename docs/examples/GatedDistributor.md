@@ -47,7 +47,7 @@ Returns the unix timestamp that marks the end of the token distribution.
 ### hasClaimed
 
 ```solidity
-mapping(address => bool) hasClaimed
+mapping(address => mapping(enum IGatedDistributor.GuildAction => bool)) hasClaimed
 ```
 
 Returns true if the address has already claimed their tokens.
