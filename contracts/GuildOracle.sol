@@ -48,7 +48,7 @@ abstract contract GuildOracle is ChainlinkClient {
     /// @param userAddress The address of the queried user.
     event HasAccess(address userAddress);
 
-    /// @notice Sets the oracle's details and the guild where the roles are in.
+    /// @notice Sets the oracle's details.
     /// @param linkToken The address of the Chainlink token.
     /// @param oracleAddress The address of the oracle processing the requests.
     /// @param jobId_ The id of the job to run on the oracle.

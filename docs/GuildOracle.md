@@ -45,7 +45,7 @@ constructor(
 ) 
 ```
 
-Sets the oracle's details and the guild where the roles are in.
+Sets the oracle's details.
 
 #### Parameters
 
