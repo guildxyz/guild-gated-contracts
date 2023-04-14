@@ -36,6 +36,10 @@ const config: HardhatUserConfig = {
       url: `https://goerli.infura.io/v3/${process.env.INFURA_ID}`,
       accounts: process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : []
     },
+    sepolia: {
+      url: `https://sepolia.infura.io/v3/${process.env.INFURA_ID}`,
+      accounts: process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : []
+    },
     bsc: {
       url: `https://bsc-dataseed1.binance.org`,
       accounts: process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : []
