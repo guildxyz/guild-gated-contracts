@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-/// @title Provides ERC20 token distribution based on a Merkle tree.
+/// @title Provides ERC20 token distribution based on fulfilling specific criteria on guild.xyz.
 interface IGatedDistributor {
     /// @notice Actions that can be checked via the oracle.
     enum GuildAction {

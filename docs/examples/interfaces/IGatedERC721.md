@@ -1,6 +1,6 @@
 # IGatedERC721
 
-An ERC721 token that can be claimed only by those holding a specific role on guild.xyz.
+An ERC721 token that can be claimed based on fulfilling specific criteria on guild.xyz.
 
 ## Functions
 

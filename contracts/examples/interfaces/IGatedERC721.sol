@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import { IERC721Metadata } from "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
 
-/// @title An ERC721 token that can be claimed only by those holding a specific role on guild.xyz.
+/// @title An ERC721 token that can be claimed based on fulfilling specific criteria on guild.xyz.
 interface IGatedERC721 is IERC721Metadata {
     /// @notice Actions that can be checked via the oracle.
     enum GuildAction {

@@ -1,6 +1,6 @@
 # IGatedDistributor
 
-Provides ERC20 token distribution based on a Merkle tree.
+Provides ERC20 token distribution based on fulfilling specific criteria on guild.xyz.
 
 ## Functions
 

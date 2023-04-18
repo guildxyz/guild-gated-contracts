@@ -7,7 +7,6 @@ import { IERC721Metadata } from "@openzeppelin/contracts/token/ERC721/extensions
 import { ERC721 } from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 import { Strings } from "@openzeppelin/contracts/utils/Strings.sol";
-import { MerkleProof } from "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 
 /// @title An ERC721 token that can be claimed only by those holding a specific role on guild.xyz.
 contract GatedERC721 is GuildOracle, ERC721, IGatedERC721, Ownable {
