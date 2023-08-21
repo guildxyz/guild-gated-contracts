@@ -28,7 +28,7 @@ const config: HardhatUserConfig = {
   },
   networks: {
     hardhat: {},
-    mainnet: {
+    ethereum: {
       url: `https://mainnet.infura.io/v3/${process.env.INFURA_ID}`,
       accounts: process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : []
     },
@@ -62,6 +62,10 @@ const config: HardhatUserConfig = {
     },
     arbitrum: {
       url: "https://arbitrum.blockpi.network/v1/rpc/public",
+      accounts: process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : []
+    },
+    base: {
+      url: "https://base-mainnet.public.blastapi.io",
       accounts: process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : []
     }
   },
