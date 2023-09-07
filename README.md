@@ -51,6 +51,7 @@ Networks can be configured in _[hardhat.config.ts](hardhat.config.ts)_. We've pr
 - `gnosis` (Gnosis Chain (formerly xDai Chain))
 - `arbitrum` (Arbitrum One (Mainnet))
 - `base` (Base Mainnet)
+- `optimism` (Optimism Mainnet)
 
 ## Verification
 

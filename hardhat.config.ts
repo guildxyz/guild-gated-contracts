@@ -67,6 +67,10 @@ const config: HardhatUserConfig = {
     base: {
       url: "https://base-mainnet.public.blastapi.io",
       accounts: process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : []
+    },
+    optimism: {
+      url: "https://optimism-mainnet.public.blastapi.io",
+      accounts: process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : []
     }
   },
   gasReporter: {
