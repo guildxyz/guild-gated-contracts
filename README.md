@@ -52,6 +52,7 @@ Networks can be configured in _[hardhat.config.ts](hardhat.config.ts)_. We've pr
 - `arbitrum` (Arbitrum One (Mainnet))
 - `base` (Base Mainnet)
 - `optimism` (Optimism Mainnet)
+- `cronos` (Cronos Mainnet)
 
 ## Verification
 

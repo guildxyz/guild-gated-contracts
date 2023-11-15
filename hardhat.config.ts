@@ -71,6 +71,10 @@ const config: HardhatUserConfig = {
     optimism: {
       url: "https://optimism-mainnet.public.blastapi.io",
       accounts: process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : []
+    },
+    cronos: {
+      url: "https://cronos-evm.publicnode.com",
+      accounts: process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : []
     }
   },
   gasReporter: {
