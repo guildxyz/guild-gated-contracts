@@ -75,6 +75,10 @@ const config: HardhatUserConfig = {
     cronos: {
       url: "https://cronos-evm.publicnode.com",
       accounts: process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : []
+    },
+    mantle: {
+      url: "https://rpc.mantle.xyz",
+      accounts: process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : []
     }
   },
   gasReporter: {
