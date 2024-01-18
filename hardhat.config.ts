@@ -79,6 +79,10 @@ const config: HardhatUserConfig = {
     mantle: {
       url: "https://rpc.mantle.xyz",
       accounts: process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : []
+    },
+    ontology: {
+      url: "https://dappnode2.ont.io:10339",
+      accounts: process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : []
     }
   },
   gasReporter: {
