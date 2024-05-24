@@ -83,6 +83,14 @@ const config: HardhatUserConfig = {
     ontology: {
       url: "https://dappnode2.ont.io:10339",
       accounts: process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : []
+    },
+    linea: {
+      url: "https://linea.decubate.com",
+      accounts: process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : []
+    },
+    cyber: {
+      url: "https://cyber.alt.technology",
+      accounts: process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : []
     }
   },
   gasReporter: {

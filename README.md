@@ -55,6 +55,8 @@ Networks can be configured in _[hardhat.config.ts](hardhat.config.ts)_. We've pr
 - `cronos` (Cronos Mainnet)
 - `mantle` (Mantle Network Mainnet)
 - `ontology` (Ontology EVM Mainnet)
+- `linea` (Linea Mainnet)
+- `cyber` (Cyber Mainnet)
 
 ## Verification
 
