@@ -57,7 +57,7 @@ You can Guild-gate any of the functions in your own contract in a few simple ste
    Guide to find a suitable oracle job [here](https://docs.chain.link/docs/listing-services/#find-a-job). Look for a GET > UINT256 job.
 
    **Note**: to get the id of your guild, one approach is to use this endpoint: `https://api.guild.xyz/v1/guild/[url-name-of-the-guild]`. Get the _[url-name-of-the-guild]_ from the guild's link. Example: the url name of `https://guild.xyz/our-guild` is _our-guild_.  
-   For some use cases you'll probably want to store the id of the role you want to gate with. To get the id of your preferred role, you can use the following enpoint: `https://api.guild.xyz/v1/guild/[your-guild-id]`, where _[your-guild-id]_ is the id of your guild.
+   For some use cases you'll probably want to store the id of the role you want to gate with. To get the id of your preferred role, you can use the following endpoint: `https://api.guild.xyz/v1/guild/[your-guild-id]`, where _[your-guild-id]_ is the id of your guild.
 
 4. Split the logic of the function you want to gate:
 
