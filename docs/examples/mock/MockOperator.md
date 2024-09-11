@@ -299,7 +299,7 @@ Taken from LinkTokenReceiver.sol._
 modifier validateMultiWordResponseId(bytes32 requestId, bytes data)
 ```
 
-_Reverts if the first 32 bytes of the bytes array is not equal to requestId_
+_Reverts if the first 32 bytes of the bytes array are not equal to requestId_
 
 #### Parameters
 
